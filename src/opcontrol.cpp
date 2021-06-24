@@ -22,6 +22,7 @@ void opcontrol() {
 
 	while (true) {
 		
+		sController->act();
 		pros::delay(20);
 	}
 }

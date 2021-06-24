@@ -38,5 +38,5 @@ void autonomous() {
     }
 	sOdom->waitUntilStop();
 	sThread->killTask("move");
-	sOdom->stopDrive();
+	sRobot->stopDrive();
 }

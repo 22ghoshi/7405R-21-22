@@ -1,14 +1,14 @@
 #include "Controller.hpp"
 
-Controller* Controller::cInstance = NULL;
+Controller* Controller::pInstance = NULL;
 
 Controller::Controller() : master(pros::E_CONTROLLER_MASTER) {};
 
 Controller* Controller::Instance() {
-    if(!cInstance) {
-        cInstance = new Controller();
+    if(!pInstance) {
+        pInstance = new Controller();
     }
-    return cInstance;
+    return pInstance;
 }
 
 void Controller::update(void* params) {
@@ -30,6 +30,14 @@ void Controller::update(void* params) {
 }
 
 void Controller::act() {
+    for (auto const& [button, status] : buttonNewPressStatus) {
+        if(status) {
+            if(buttonNewPressActions.find(button) != buttonNewPressActions.end()) {
+                buttonNewPressActions.at(button)();
+            }
+        }
+    }
+    
     for (auto const& [button, status] : buttonStatus) {
         if(status) {
             if(buttonActions.find(button) != buttonActions.end()) {
@@ -38,14 +46,6 @@ void Controller::act() {
         } else if (!status) {
             if(buttonDefaults.find(button) != buttonDefaults.end()) {
                 buttonDefaults.at(button)();
-            }
-        }
-    }
-
-    for (auto const& [button, status] : buttonNewPressStatus) {
-        if(status) {
-            if(buttonNewPressActions.find(button) != buttonNewPressActions.end()) {
-                buttonNewPressActions.at(button)();
             }
         }
     }

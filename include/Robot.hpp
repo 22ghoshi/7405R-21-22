@@ -2,6 +2,7 @@
 #include "main.h"
 
 #include "Sensor.hpp"
+#include "Motor.hpp"
 
 #include <map>
 #include <memory>
@@ -18,8 +19,6 @@ class Robot {
         return *this;
     }
 
-    std::map<std::string, std::unique_ptr<pros::Motor>> motors;
-
     static Robot* pInstance;
 
     public:
@@ -27,14 +26,5 @@ class Robot {
 
     void mecanum(int power, int strafe, int turn);
     void arcade(int power, int turn);
-    
-
-    pros::Motor* getMotor(std::string name);
-    pros::ADIButton* getButton(std::string name);
-    pros::ADILineSensor* getLine(std::string name);
-    pros::ADIPotentiometer* getPotentiometer(std::string name);
-    pros::ADIUltrasonic* getUltrasonic(std::string name);
-    pros::ADIEncoder* getEncoder(std::string name);
-    pros::Imu* getInertial(std::string name);
-    pros::Vision* getVision(std::string name);
+    void stopDrive();
 };

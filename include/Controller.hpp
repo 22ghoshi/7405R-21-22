@@ -17,7 +17,7 @@ class Controller {
     std::map<pros::controller_digital_e_t, std::function<void(void)>> buttonDefaults;
     std::map<pros::controller_digital_e_t, std::function<void(void)>> buttonNewPressActions;
 
-    static Controller* cInstance;
+    static Controller* pInstance;
 
     public:
     static Controller* Instance();

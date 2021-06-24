@@ -16,7 +16,7 @@ class Thread {
 
     std::map<std::string, std::unique_ptr<pros::Task>> tasks;
 
-    static Thread* tInstance;
+    static Thread* pInstance;
 
     public:
     static Thread* Instance();

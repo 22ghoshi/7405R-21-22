@@ -42,7 +42,7 @@ struct Point {
 class Odometry {
     private:
     Odometry();
-    static Odometry* oInstance;
+    static Odometry* pInstance;
 
     public:
     Point currentPos;
@@ -65,7 +65,6 @@ class Odometry {
     void setTarget(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void setTargetNow(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void waitUntilStop();
-    void stopDrive();
     double toRadians(double degrees);
     double toDegrees(double radians);
     double turnToHorizontalMovement(double deltaRotation);

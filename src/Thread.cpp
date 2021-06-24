@@ -1,14 +1,14 @@
 #include "Thread.hpp"
 
-Thread* Thread::tInstance = NULL;
+Thread* Thread::pInstance = NULL;
 
 Thread::Thread() {};
 
 Thread* Thread::Instance() {
-    if (!tInstance) {
-        tInstance = new Thread();
+    if (!pInstance) {
+        pInstance = new Thread();
     }
-    return tInstance;
+    return pInstance;
 }
 
 void Thread::startTask(std::string name, void (*func)(void*), void* params) {

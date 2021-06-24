@@ -46,7 +46,7 @@ void initialize() {
 	pros::lcd::register_btn2_cb(on_right_button);
 
 	Robot::Instance();
-	sRobot->getInertial("Inertial")->reset();
+	Sensor::getInertial("Inertial")->reset();
     pros::delay(3000);
 
 	Odometry::Instance();
