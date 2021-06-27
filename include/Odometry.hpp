@@ -3,26 +3,42 @@
 
 #include "Robot.hpp"
 
+#include <atomic>
+
 #define sOdom Odometry::Instance()
 
 struct Point {
-    double x = 0;
-    double y = 0;
-    double h = 0;
+    std::atomic<double> x;
+    std::atomic<double> y;
+    std::atomic<double> h;
+
+    Point() {
+        this->x = 0;
+        this->y = 0;
+        this->h = 0;
+    }
+    Point(double x, double y) {
+        this->x = x;
+        this->y = y;
+        this->h = 0;
+    }
+    Point(const Point& point) {
+        this->x = point.x.load();
+        this->y = point.y.load();
+        this->h = point.h.load();
+    }
+    void operator=(const Point& equal) {
+        this->x = equal.x.load();
+        this->y = equal.y.load();
+        this->h = equal.h.load();
+    };
     void operator+=(const Point& add) {
-        this->x += add.x;
-        this->y += add.y; 
+        this->x = this->x + add.x;
+        this->y = this->y + add.y;
     };
     Point operator-(const Point& sub) {
-        Point res;
-        res.x = this->x - sub.x;
-        res.y = this->y - sub.y;
+        Point res(this->x - sub.x, this->y - sub.y);
         return res;
-    };
-    void operator=(const Point& equal) {
-        this->x = equal.x;
-        this->y = equal.y;
-        this->h = equal.h;
     };
     double distanceTo(const Point& to) {
         double dist;
@@ -43,8 +59,6 @@ class Odometry {
     private:
     Odometry();
     static Odometry* pInstance;
-
-    public:
     Point currentPos;
     Point targetPos;
     double moveDist;
@@ -58,10 +72,13 @@ class Odometry {
     double tkD;
     double tacc;
     int moves;
-    
+
+    public:
     static Odometry* Instance();
     static void FPS(void* params);
+    static void oldmoveTo(void* params);
     static void moveTo(void* params);
+    static void tmoveTo(void* params);
     void setTarget(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void setTargetNow(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void waitUntilStop();

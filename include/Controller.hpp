@@ -12,6 +12,11 @@ class Controller {
     private:
     Controller();
 
+    pros::Controller master;
+
+    std::map<pros::controller_analog_e_t, std::int32_t> analogValues;
+    std::map<pros::controller_digital_e_t, bool> buttonStatus;
+    std::map<pros::controller_digital_e_t, bool> buttonNewPressStatus;
 
     std::map<pros::controller_digital_e_t, std::function<void(void)>> buttonActions;
     std::map<pros::controller_digital_e_t, std::function<void(void)>> buttonDefaults;
@@ -21,12 +26,6 @@ class Controller {
 
     public:
     static Controller* Instance();
-
-    pros::Controller master;
-
-    std::map<pros::controller_analog_e_t, std::int32_t> analogValues;
-    std::map<pros::controller_digital_e_t, bool> buttonStatus;
-    std::map<pros::controller_digital_e_t, bool> buttonNewPressStatus;
 
     static void update(void* params);
     void act();

@@ -14,11 +14,11 @@ Odometry::Odometry() {
     mkP = 0;
     mkI = 0;
     mkD = 0;
-    macc = 100;
+    macc = 50;
     tkP = 0;
     tkI = 0;
     tkD = 0;
-    tacc = 5;
+    tacc = 4;
     moves = 0;
 }
 
@@ -33,7 +33,7 @@ void Odometry::FPS(void* params) {
     double previousHeading = sOdom->currentPos.h;
     while(true) {
         sOdom->currentPos.h = Sensor::getInertial("Inertial")->get_rotation();
-        double heading = sOdom->currentPos.h;
+        double heading = sOdom->currentPos.h.load();
 
         double deltaRotation = heading - previousHeading;
         double verticalMovement = ((Sensor::getEncoder("Left")->get_value() + Sensor::getEncoder("Right")->get_value()) / 2);
@@ -46,9 +46,9 @@ void Odometry::FPS(void* params) {
 
         sOdom->currentPos += deltaPoint;
 
-        pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x));
-		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y));
-        pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h));
+        pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
+		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
+        pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
         
         Sensor::getEncoder("Left")->reset();
         Sensor::getEncoder("Middle")->reset();
@@ -59,7 +59,7 @@ void Odometry::FPS(void* params) {
     }
 }
 
-void Odometry::moveTo(void* params) {
+void Odometry::oldmoveTo(void* params) {
     pros::delay(20);
     double turn;
     Point movePoint;
@@ -76,7 +76,7 @@ void Odometry::moveTo(void* params) {
 
     while(true) {
         // pros::lcd::set_text(4, std::to_string(sOdom->moveDist));
-        turn = sOdom->currentPos.h;
+        turn = sOdom->currentPos.h.load();
         if (fabs(turn) > 360.0) {
             turn = std::fmod(turn, 360.0);
         }
@@ -84,11 +84,11 @@ void Odometry::moveTo(void* params) {
         movePoint.h = sOdom->currentPos.angleTo(sOdom->targetPos);
         
         sOdom->moveDist = sOdom->currentPos.distanceTo(sOdom->targetPos);
-        sOdom->turnErr = sOdom->targetPos.h - sOdom->currentPos.h;
-        relativePoint.h = movePoint.h - turn;
-        relativePoint.x = sOdom->moveDist * sin(sOdom->toRadians(relativePoint.h));
-        relativePoint.y = sOdom->moveDist * cos(sOdom->toRadians(relativePoint.h));
-        relativesum = fabs(relativePoint.x) + fabs(relativePoint.y);
+        sOdom->turnErr = sOdom->targetPos.h.load() - sOdom->currentPos.h.load();
+        relativePoint.h = movePoint.h.load() - turn;
+        relativePoint.x = sOdom->moveDist * sin(sOdom->toRadians(relativePoint.h.load()));
+        relativePoint.y = sOdom->moveDist * cos(sOdom->toRadians(relativePoint.h.load()));
+        relativesum = fabs(relativePoint.x.load()) + fabs(relativePoint.y.load());
 
         n += 1;
         if (n == 1) {
@@ -139,6 +139,151 @@ void Odometry::moveTo(void* params) {
     }
 }
 
+void Odometry::moveTo(void* params) {
+    pros::delay(20);
+    double turn;
+    Point movePoint;
+
+    double mP = 0, mI = 0, mD = 0;
+    double prevMoveDist;
+
+    double tP = 0, tI = 0, tD = 0;
+    double prevTurnErr;
+
+    int n = 0;
+
+    while(true) {
+        turn = sOdom->currentPos.h;
+        if (fabs(turn) > 360.0) {
+            turn = std::fmod(turn, 360.0);
+        }
+        movePoint = sOdom->targetPos - sOdom->currentPos;
+        movePoint.h = sOdom->currentPos.angleTo(sOdom->targetPos);
+        
+        sOdom->moveDist = sOdom->currentPos.distanceTo(sOdom->targetPos);
+        sOdom->turnErr = movePoint.h.load() - turn;
+
+        n += 1;
+        if (n == 1) {
+            prevMoveDist = sOdom->moveDist;
+            prevTurnErr = sOdom->turnErr;
+        }
+
+        if (fabs(sOdom->turnErr) > sOdom->tacc) {
+            tP = sOdom->turnErr;
+            tI += sOdom->turnErr;
+            tD = sOdom->turnErr - prevTurnErr;
+            prevTurnErr = sOdom->turnErr;
+
+            double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
+            
+            sRobot->arcade(0, turnSpeed);
+        }
+        else if (sOdom->moveDist > sOdom->macc) {
+            tP = sOdom->turnErr;
+            tI += sOdom->turnErr;
+            tD = sOdom->turnErr - prevTurnErr;
+            prevTurnErr = sOdom->turnErr;
+
+            double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
+            
+            mP = sOdom->moveDist;
+            mI += sOdom->moveDist;
+            mD = sOdom->moveDist - prevMoveDist;
+            prevMoveDist = sOdom->moveDist;
+
+            double moveSpeed = (sOdom->mkP *  mP) + (sOdom->mkI * mI) + (sOdom->mkD * mD);
+
+            double speedSum = moveSpeed + fabs(turnSpeed);
+            double maxMoveSpeed = moveSpeed * (127 / speedSum);
+            double maxTurnSpeed = turnSpeed * (127 / speedSum);
+            if (moveSpeed > maxMoveSpeed) {
+                moveSpeed = maxMoveSpeed;
+            }
+            if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
+                turnSpeed = maxTurnSpeed;
+            }
+            
+            sRobot->arcade(moveSpeed, turnSpeed);
+        }
+        else {
+            n = 0;
+            mI = 0;
+            tI = 0;
+            sRobot->stopDrive();
+        }
+
+        pros::delay(20);
+    }
+}
+
+void Odometry::tmoveTo(void* params) {
+    pros::delay(20);
+    double turn;
+    Point movePoint;
+
+    double mP = 0, mI = 0, mD = 0;
+    double prevMoveDist;
+
+    double tP = 0, tI = 0, tD = 0;
+    double prevTurnErr;
+
+    int n = 0;
+
+    while(true) {
+        turn = sOdom->currentPos.h;
+        if (fabs(turn) > 360.0) {
+            turn = std::fmod(turn, 360.0);
+        }
+        movePoint = sOdom->targetPos - sOdom->currentPos;
+        movePoint.h = sOdom->currentPos.angleTo(sOdom->targetPos);
+        
+        sOdom->moveDist = sOdom->currentPos.distanceTo(sOdom->targetPos);
+        sOdom->turnErr = movePoint.h.load() - turn;
+
+        n += 1;
+        if (n == 1) {
+            prevMoveDist = sOdom->moveDist;
+            prevTurnErr = sOdom->turnErr;
+        }
+
+        if (fabs(sOdom->turnErr) > sOdom->tacc || sOdom->moveDist > sOdom->macc) {
+            tP = sOdom->turnErr;
+            tI += sOdom->turnErr;
+            tD = sOdom->turnErr - prevTurnErr;
+            prevTurnErr = sOdom->turnErr;
+
+            double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
+            
+            mP = sOdom->moveDist;
+            mI += sOdom->moveDist;
+            mD = sOdom->moveDist - prevMoveDist;
+            prevMoveDist = sOdom->moveDist;
+
+            double moveSpeed = (sOdom->mkP *  mP) + (sOdom->mkI * mI) + (sOdom->mkD * mD);
+
+            double speedSum = moveSpeed + fabs(turnSpeed);
+            double maxMoveSpeed = moveSpeed * (127 / speedSum);
+            double maxTurnSpeed = turnSpeed * (127 / speedSum);
+            if (moveSpeed > maxMoveSpeed) {
+                moveSpeed = maxMoveSpeed;
+            }
+            if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
+                turnSpeed = maxTurnSpeed;
+            }
+            
+            sRobot->arcade(moveSpeed, turnSpeed);
+        }
+        else {
+            n = 0;
+            mI = 0;
+            tI = 0;
+            sRobot->stopDrive();
+        }
+
+        pros::delay(20);
+    }
+}
 void Odometry::setTarget(double setx, double sety, double setTurn, std::initializer_list<double> mPID, double setmacc, std::initializer_list<double> tPID, double settacc) {
     waitUntilStop();
     moves++;
@@ -184,7 +329,7 @@ void Odometry::waitUntilStop() {
         pros::delay(20);
         time += 20;
     }
-    while(sOdom->moveDist > sOdom->macc || sOdom->turnErr > sOdom->tacc || sOdom->turnErr < (-1 * tacc)) {
+    while(sOdom->moveDist > sOdom->macc || fabs(sOdom->turnErr) > sOdom->tacc) {
         // if (fabs(sRobot->getMotor("BackLeft")->get_actual_velocity()) < 10.0 && fabs(sRobot->getMotor("FrontRight")->get_actual_velocity()) < 10.0) {
         //     // pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
         //     break;
