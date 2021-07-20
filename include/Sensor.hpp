@@ -6,7 +6,7 @@
 #include <string>
 #include <stdexcept>
 
-enum class sensorClass { button, line, potentiometer, ultrasonic, encoder, inertial, vision };
+enum class sensorClass { button, line, potentiometer, ultrasonic, encoder, rotation, inertial, vision };
 
 class Sensor {
     private:
@@ -15,6 +15,7 @@ class Sensor {
     static std::map<std::string, std::unique_ptr<pros::ADIPotentiometer>> potentiometer;
     static std::map<std::string, std::unique_ptr<pros::ADIUltrasonic>> ultrasonic;
     static std::map<std::string, std::unique_ptr<pros::ADIEncoder>> encoder;
+    static std::map<std::string, std::unique_ptr<pros::Rotation>> rotation;
     static std::map<std::string, std::unique_ptr<pros::Imu>> inertial;
     static std::map<std::string, std::unique_ptr<pros::Vision>> vision;
     std::string name;
@@ -35,6 +36,7 @@ class Sensor {
     static pros::ADIPotentiometer* getPotentiometer(std::string name);
     static pros::ADIUltrasonic* getUltrasonic(std::string name);
     static pros::ADIEncoder* getEncoder(std::string name);
+    static pros::Rotation* getRotation(std::string name);
     static pros::Imu* getInertial(std::string name);
     static pros::Vision* getVision(std::string name);
 };

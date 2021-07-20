@@ -6,13 +6,14 @@ std::map<std::string, std::unique_ptr<pros::ADILineSensor>> Sensor::line;
 std::map<std::string, std::unique_ptr<pros::ADIPotentiometer>> Sensor::potentiometer;
 std::map<std::string, std::unique_ptr<pros::ADIUltrasonic>> Sensor::ultrasonic;
 std::map<std::string, std::unique_ptr<pros::ADIEncoder>> Sensor::encoder;
+std::map<std::string, std::unique_ptr<pros::Rotation>> Sensor::rotation;
 std::map<std::string, std::unique_ptr<pros::Imu>> Sensor::inertial;
 std::map<std::string, std::unique_ptr<pros::Vision>> Sensor::vision;
 
 Sensor::Sensor() {}
 
 Sensor::Sensor(std::string sensorName, sensorClass sensorType, std::uint8_t sensorPort, bool reversed) {
-    if ((sensorType == sensorClass::inertial || sensorType == sensorClass::vision) && (sensorPort < 1 || sensorPort > 21)) {
+    if ((sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation) && (sensorPort < 1 || sensorPort > 21)) {
         throw std::invalid_argument("inertial/vision port 1 - 21 only");
     }
     else if (sensorPort < 1 || sensorPort > 8) {
@@ -43,6 +44,9 @@ Sensor::Sensor(std::string sensorName, sensorClass sensorType, std::uint8_t sens
         case sensorClass::encoder:
            encoder[name] = std::make_unique<pros::ADIEncoder>(port, port + 1, reverse);
            break;
+        case sensorClass::rotation:
+            rotation[name] = std::make_unique<pros::Rotation>(port);
+            break;
         case sensorClass::inertial:
             inertial[name] = std::make_unique<pros::Imu>(port);
             break;
@@ -109,6 +113,9 @@ pros::ADIUltrasonic* Sensor::getUltrasonic(std::string name) {
 }
 pros::ADIEncoder* Sensor::getEncoder(std::string name) {
 	return Sensor::encoder.at(name).get();
+}
+pros::Rotation* Sensor::getRotation(std::string name) {
+    return Sensor::rotation.at(name).get();
 }
 pros::Imu* Sensor::getInertial(std::string name) {
 	return Sensor::inertial.at(name).get();
