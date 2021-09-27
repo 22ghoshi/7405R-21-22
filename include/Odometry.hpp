@@ -45,7 +45,9 @@ struct Point {
         dist = sqrt(((to.x - x) * (to.x - x)) + ((to.y - y) * (to.y - y)));
         return dist;
     };
-    double angleTo(const Point& to) /*returns angle RELATIVE TO Y AXIS IN DEGREES from -180 to 180*/ { 
+    
+    //returns angle relative to y axis in degrees from -180 to 180
+    double angleTo(const Point& to) { 
         double angle;
         double tox, toy;
         tox = to.x - this->x;

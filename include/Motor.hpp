@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 enum class motorGearset { GS100, GS200, GS600 };
 enum class brakeType { coast, brake, hold };

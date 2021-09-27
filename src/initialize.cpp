@@ -3,15 +3,14 @@
 //vector of autons
 std::vector<std::string> autonNames{"red", "blue", "test"};
 autonSelect autonselect = autonSelect::red;
-int autons = autonNames.size();
 
 void on_center_button() {
 	
 }
 
 void on_left_button() {
-    if ((int)autonselect == 1) {
-		autonselect = autonSelect::test;
+    if ((int)autonselect == 0) {
+		autonselect = (autonSelect)(autonNames.size() - 1);
 	}
 	else {
 		autonselect = (autonSelect)((int)autonselect - 1);
@@ -21,8 +20,8 @@ void on_left_button() {
 }
 
 void on_right_button() {
-    if ((int)autonselect == autons) {
-		autonselect = autonSelect::red;
+    if ((int)autonselect == (autonNames.size() - 1)) {
+		autonselect = (autonSelect)0;
 	}
 	else {
 		autonselect = (autonSelect)((int)autonselect + 1);
@@ -46,11 +45,11 @@ void initialize() {
 	pros::lcd::register_btn2_cb(on_right_button);
 
 	Robot::Instance();
-	Sensor::getInertial("Inertial")->reset();
-    pros::delay(3000);
+	// Sensor::getInertial("Inertial")->reset();
+    // pros::delay(3000);
 
-	Odometry::Instance();
-	sThread->startTask("fps", Odometry::FPS);
+	// Odometry::Instance();
+	// sThread->startTask("fps", Odometry::FPS);
 }
 
 /**
