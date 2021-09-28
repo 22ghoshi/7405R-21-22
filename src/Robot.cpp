@@ -5,9 +5,9 @@ Robot* Robot::pInstance = NULL;
 Robot::Robot() {
 	//dead ports
 	Motor::motors["BackLeft"] = std::make_unique<Motor>("BackLeft", motorGearset::GS600, 1);
-	Motor::motors["BackRight"] = std::make_unique<Motor>("BackRight", motorGearset::GS600, 15);
+	Motor::motors["BackRight"] = std::make_unique<Motor>("BackRight", motorGearset::GS600, 15, true);
 	Motor::motors["FrontLeft"] = std::make_unique<Motor>("FrontLeft", motorGearset::GS600, 9);
-	Motor::motors["FrontRight"] = std::make_unique<Motor>("FrontRight", motorGearset::GS600, 17);
+	Motor::motors["FrontRight"] = std::make_unique<Motor>("FrontRight", motorGearset::GS600, 17, true);
 	Motor::makeGroup("LeftDrive", {"BackLeft", "FrontLeft"});
 	Motor::makeGroup("RightDrive", {"BackRight", "FrontRight"});
 	Motor::makeGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
