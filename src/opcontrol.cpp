@@ -14,14 +14,15 @@
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	if (sThread->existsTask("move")) {
-		sThread->killTask("move");
+	if (Thread::existsTask("move")) {
+		Thread::killTask("move");
 	}
-	sThread->startTask("update", Controller::update);
-	sThread->startTask("drive", robotFuncs::drive);
+	Thread::startTask("update", Controller::update);
+	Thread::startTask("drive", robotFuncs::drive);
 
 	while (true) {
-		
+		pros::lcd::set_text(6, "BackRight:" + std::to_string(Motor::getMotor("BackRight")->get_power()));
+		pros::lcd::set_text(7, "FrontRight: " + std::to_string(Motor::getMotor("FrontRight")->get_power()));
 		sController->act();
 		pros::delay(20);
 	}

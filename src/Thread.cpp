@@ -1,15 +1,8 @@
 #include "Thread.hpp"
 
-Thread* Thread::pInstance = NULL;
+std::map<std::string, std::unique_ptr<pros::Task>> Thread::tasks;
 
 Thread::Thread() {};
-
-Thread* Thread::Instance() {
-    if (!pInstance) {
-        pInstance = new Thread();
-    }
-    return pInstance;
-}
 
 void Thread::startTask(std::string name, void (*func)(void*), void* params) {
 	if (!existsTask(name)) {

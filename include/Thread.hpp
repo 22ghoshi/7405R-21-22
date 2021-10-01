@@ -8,23 +8,17 @@
 #include <memory>
 #include <string>
 
-#define sThread Thread::Instance()
-
 class Thread {
     private:
     Thread();
 
-    std::map<std::string, std::unique_ptr<pros::Task>> tasks;
-
-    static Thread* pInstance;
+    static std::map<std::string, std::unique_ptr<pros::Task>> tasks;
 
     public:
-    static Thread* Instance();
-
-    void startTask(std::string name, void (*func)(void*), void* params = nullptr);
-	void pauseTask(std::string name);
-	void resumeTask(std::string name);
-	void killTask(std::string name);
-	bool isRunning(std::string name);
-	bool existsTask(std::string name);
+    static void startTask(std::string name, void (*func)(void*), void* params = nullptr);
+	static void pauseTask(std::string name);
+	static void resumeTask(std::string name);
+	static void killTask(std::string name);
+	static bool isRunning(std::string name);
+	static bool existsTask(std::string name);
 };

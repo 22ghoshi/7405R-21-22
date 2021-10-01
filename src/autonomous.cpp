@@ -24,7 +24,7 @@ void test() {
  * from where it left off.
  */
 void autonomous() {
-    sThread->startTask("move", Odometry::moveTo);
+    Thread::startTask("move", Odometry::moveTo);
 	switch (autonselect) {
 		case autonSelect::red:
 			red();
@@ -37,6 +37,6 @@ void autonomous() {
 			break;
     }
 	sOdom->waitUntilStop();
-	sThread->killTask("move");
+	Thread::killTask("move");
 	sRobot->stopDrive();
 }
