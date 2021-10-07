@@ -1,6 +1,5 @@
 #include "Sensor.hpp"
 
-std::map<std::string, std::unique_ptr<Sensor>> Sensor::sensors;
 std::map<std::string, std::unique_ptr<pros::ADIButton>> Sensor::button;
 std::map<std::string, std::unique_ptr<pros::ADILineSensor>> Sensor::line;
 std::map<std::string, std::unique_ptr<pros::ADIPotentiometer>> Sensor::potentiometer;
@@ -97,29 +96,4 @@ std::string Sensor::getName() {
 
 sensorClass Sensor::getType() {
     return this->type;
-}
-
-pros::ADIButton* Sensor::getButton(std::string name) {
-    return Sensor::button.at(name).get();
-}
-pros::ADILineSensor* Sensor::getLine(std::string name) {
-	return Sensor::line.at(name).get();
-}
-pros::ADIPotentiometer* Sensor::getPotentiometer(std::string name) {
-	return Sensor::potentiometer.at(name).get();
-}
-pros::ADIUltrasonic* Sensor::getUltrasonic(std::string name) {
-	return Sensor::ultrasonic.at(name).get();
-}
-pros::ADIEncoder* Sensor::getEncoder(std::string name) {
-	return Sensor::encoder.at(name).get();
-}
-pros::Rotation* Sensor::getRotation(std::string name) {
-    return Sensor::rotation.at(name).get();
-}
-pros::Imu* Sensor::getInertial(std::string name) {
-	return Sensor::inertial.at(name).get();
-}
-pros::Vision* Sensor::getVision(std::string name) {
-	return Sensor::vision.at(name).get();
 }

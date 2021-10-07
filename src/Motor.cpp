@@ -1,7 +1,5 @@
 #include "Motor.hpp"
 
-std::map<std::string, std::unique_ptr<Motor>> Motor::motors;
-
 Motor::Motor() {}
 
 Motor::Motor(std::string motorName, motorGearset motorGearset, std::uint8_t motorPort, bool reversed) {
@@ -27,50 +25,41 @@ Motor::Motor(std::string motorName, motorGearset motorGearset, std::uint8_t moto
     }
 }
 
-void Motor::makeGroup(std::string motorGroupName, std::vector<std::string> motorGroupMotors) {
-    MotorGroup::motorGroups[motorGroupName] = std::make_unique<MotorGroup>(motorGroupName, motorGroupMotors);
+pros::Motor* Motor::getMotor() {
+    return this->motor.get();
 }
-
-pros::Motor* Motor::getMotor(std::string name) {
-    return Motor::motors.at(name).get()->motor.get();
-}
-
-std::map<std::string, std::unique_ptr<MotorGroup>> MotorGroup::motorGroups;
 
 MotorGroup::MotorGroup() {}
 
-MotorGroup::MotorGroup(std::string motorGroupName, std::vector<std::string> motorGroupMotors) {
+MotorGroup::MotorGroup(std::string motorGroupName, std::vector<std::shared_ptr<Motor>> motorGroupMotors) {
     this->name = motorGroupName;
     this->motors = motorGroupMotors;
 }
 
 void MotorGroup::operator=(std::int32_t voltage) {
     for (auto const& motor : this->motors) {
-        *(Motor::getMotor(motor)) = voltage;
+        *(motor.get()->getMotor()) = voltage;
     }
 }
 
+//coasts by default
 void MotorGroup::stop(brakeType brake) {
     *(this) = 0;
     switch(brake) {
         case brakeType::coast:
-            for (std::string motor : MotorGroup::motors) {
-                Motor::getMotor(motor)->set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+            for (auto const& motor : this->motors) {
+                motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
             }
             break;
         case brakeType::brake:
-            for (std::string motor : MotorGroup::motors) {
-                Motor::getMotor(motor)->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+            for (auto& motor : this->motors) {
+                motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
             }
             break;
         case brakeType::hold:
-            for (std::string motor : MotorGroup::motors) {
-                Motor::getMotor(motor)->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+            for (auto& motor : this->motors) {
+                motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
             break;
     }
-}
-
-MotorGroup* MotorGroup::getMotorGroup(std::string name) {
-    return MotorGroup::motorGroups.at(name).get();
 }

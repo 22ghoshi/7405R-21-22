@@ -19,23 +19,19 @@ class Motor {
     bool reverse;
 
     public:
-    static std::map<std::string, std::unique_ptr<Motor>> motors;
     Motor();
     Motor(std::string motorName, motorGearset motorGearset, std::uint8_t motorPort, bool reversed = false);
-    static void makeGroup(std::string motorGroupName, std::vector<std::string> motorGroupMotors);
-    static pros::Motor* getMotor(std::string name);
+    pros::Motor* getMotor();
 };
 
 class MotorGroup {
     private:
     std::string name;
-    std::vector<std::string> motors;
+    std::vector<std::shared_ptr<Motor>> motors;
 
     public:
-    static std::map<std::string, std::unique_ptr<MotorGroup>> motorGroups;
     MotorGroup();
-    MotorGroup(std::string motorGroupName, std::vector<std::string> motorGroupMotors);
+    MotorGroup(std::string motorGroupName, std::vector<std::shared_ptr<Motor>> motorGroupMotors);
     void operator=(std::int32_t voltage);
-    void stop(brakeType brake);
-    static MotorGroup* getMotorGroup(std::string name);
+    void stop(brakeType brake = brakeType::coast);
 };

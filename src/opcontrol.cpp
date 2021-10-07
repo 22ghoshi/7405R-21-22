@@ -21,8 +21,6 @@ void opcontrol() {
 	Thread::startTask("drive", robotFuncs::drive);
 
 	while (true) {
-		pros::lcd::set_text(6, "BackRight:" + std::to_string(Motor::getMotor("BackRight")->get_power()));
-		pros::lcd::set_text(7, "FrontRight: " + std::to_string(Motor::getMotor("FrontRight")->get_power()));
 		sController->act();
 		pros::delay(20);
 	}

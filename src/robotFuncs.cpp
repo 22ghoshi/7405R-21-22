@@ -18,7 +18,8 @@ namespace robotFuncs {
             int leftx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_X);
             int lefty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
             int rightx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-            sRobot->arcade(lefty, rightx);
+            int righty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+            sRobot->tank(lefty, righty);
             pros::delay(20);
         }
     }

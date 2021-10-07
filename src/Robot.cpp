@@ -4,18 +4,18 @@ Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
 	//dead ports
-	Motor::motors["BackLeft"] = std::make_unique<Motor>("BackLeft", motorGearset::GS600, 1);
-	Motor::motors["BackRight"] = std::make_unique<Motor>("BackRight", motorGearset::GS600, 15, true);
-	Motor::motors["FrontLeft"] = std::make_unique<Motor>("FrontLeft", motorGearset::GS600, 9);
-	Motor::motors["FrontRight"] = std::make_unique<Motor>("FrontRight", motorGearset::GS600, 17, true);
-	Motor::makeGroup("LeftDrive", {"BackLeft", "FrontLeft"});
-	Motor::makeGroup("RightDrive", {"BackRight", "FrontRight"});
-	Motor::makeGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
+	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 1);
+	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 15, true);
+	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 9);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 17, true);
+	makeMotorGroup("LeftDrive", {"BackLeft", "FrontLeft"});
+	makeMotorGroup("RightDrive", {"BackRight", "FrontRight"});
+	makeMotorGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
 
-	// Sensor::sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 1);
-	// Sensor::sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
-	// Sensor::sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
-	// Sensor::sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 5);
+	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 1);
+	sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
+	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
+	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 5);
 }
 
 Robot* Robot::Instance() {
@@ -26,19 +26,65 @@ Robot* Robot::Instance() {
 }
 
 void Robot::mecanum(int power, int strafe, int turn) {
-	*(Motor::getMotor("BackLeft")) = power - strafe + turn;
-	*(Motor::getMotor("BackRight")) = power + strafe - turn;
-	*(Motor::getMotor("FrontLeft")) = power + strafe + turn;
-	*(Motor::getMotor("FrontRight")) = power - strafe - turn;
+	*(getMotor("BackLeft")) = power - strafe + turn;
+	*(getMotor("BackRight")) = power + strafe - turn;
+	*(getMotor("FrontLeft")) = power + strafe + turn;
+	*(getMotor("FrontRight")) = power - strafe - turn;
 	
 }
 
 void Robot::arcade(int power, int turn) {
-	*(MotorGroup::getMotorGroup("LeftDrive")) = power + turn;
-	*(MotorGroup::getMotorGroup("RightDrive")) = power - turn;
+	*(getMotorGroup("LeftDrive")) = power + turn;
+	*(getMotorGroup("RightDrive")) = power - turn;
+}
+
+void Robot::tank(int left, int right) {
+	*(getMotorGroup("LeftDrive")) = left;
+	*(getMotorGroup("RightDrive")) = right;
 }
 
 
 void Robot::stopDrive() {
-    MotorGroup::getMotorGroup("Drive")->stop(brakeType::brake);
+    getMotorGroup("Drive")->stop(brakeType::brake);
+}
+
+void Robot::makeMotorGroup(std::string name, std::vector<std::string> motorNames) {
+	std::vector<std::shared_ptr<Motor>> motorGroupMotors;
+	for (auto const& motorName : motorNames) {
+		motorGroupMotors.push_back(motors[motorName]);
+	}
+	motorGroups[name] = std::make_unique<MotorGroup>(name, motorGroupMotors);
+}
+
+pros::Motor* Robot::getMotor(std::string name) {
+	return motors.at(name).get()->getMotor();
+}
+
+MotorGroup* Robot::getMotorGroup(std::string name) {
+	return motorGroups.at(name).get();
+}
+
+pros::ADIButton* Robot::getButton(std::string name) {
+    return Sensor::button.at(name).get();
+}
+pros::ADILineSensor* Robot::getLine(std::string name) {
+	return Sensor::line.at(name).get();
+}
+pros::ADIPotentiometer* Robot::getPotentiometer(std::string name) {
+	return Sensor::potentiometer.at(name).get();
+}
+pros::ADIUltrasonic* Robot::getUltrasonic(std::string name) {
+	return Sensor::ultrasonic.at(name).get();
+}
+pros::ADIEncoder* Robot::getEncoder(std::string name) {
+	return Sensor::encoder.at(name).get();
+}
+pros::Rotation* Robot::getRotation(std::string name) {
+    return Sensor::rotation.at(name).get();
+}
+pros::Imu* Robot::getInertial(std::string name) {
+	return Sensor::inertial.at(name).get();
+}
+pros::Vision* Robot::getVision(std::string name) {
+	return Sensor::vision.at(name).get();
 }

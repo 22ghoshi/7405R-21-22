@@ -5,7 +5,7 @@ Odometry* Odometry::pInstance = NULL;
 Odometry::Odometry() {
     currentPos.x = 0;
     currentPos.y = 0;
-    currentPos.h = Sensor::getInertial("Inertial")->get_rotation();
+    currentPos.h = sRobot->getInertial("Inertial")->get_rotation();
     targetPos.x = 0;
     targetPos.y = 0;
     targetPos.h = 0;
@@ -32,13 +32,13 @@ Odometry* Odometry::Instance() {
 void Odometry::FPS(void* params) {
     double previousHeading = sOdom->currentPos.h;
     while(true) {
-        sOdom->currentPos.h = Sensor::getInertial("Inertial")->get_rotation();
+        sOdom->currentPos.h = sRobot->getInertial("Inertial")->get_rotation();
         double heading = sOdom->currentPos.h.load();
 
         double deltaRotation = heading - previousHeading;
-        double verticalMovement = ((Sensor::getEncoder("Left")->get_value() + Sensor::getEncoder("Right")->get_value()) / 2);
+        double verticalMovement = ((sRobot->getEncoder("Left")->get_value() + sRobot->getEncoder("Right")->get_value()) / 2);
         double badHorizontalMovement = sOdom->turnToHorizontalMovement(deltaRotation);
-        double horizontalMovement = (Sensor::getEncoder("Middle")->get_value() + badHorizontalMovement);
+        double horizontalMovement = (sRobot->getEncoder("Middle")->get_value() + badHorizontalMovement);
 
         Point deltaPoint;
         deltaPoint.x = (verticalMovement * sin(sOdom->toRadians(heading))) + (horizontalMovement * cos(sOdom->toRadians(heading)));
@@ -50,9 +50,9 @@ void Odometry::FPS(void* params) {
 		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
         pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
         
-        Sensor::getEncoder("Left")->reset();
-        Sensor::getEncoder("Middle")->reset();
-        Sensor::getEncoder("Right")->reset();
+        sRobot->getEncoder("Left")->reset();
+        sRobot->getEncoder("Middle")->reset();
+        sRobot->getEncoder("Right")->reset();
         previousHeading = heading;
 
         pros::delay(20);
@@ -122,10 +122,10 @@ void Odometry::oldmoveTo(void* params) {
                 turnSpeed = maxTurnSpeed;
             }
 
-            *(Motor::getMotor("BackLeft")) = ((relativePoint.y - relativePoint.x) * (moveSpeed / relativesum) + turnSpeed);
-            *(Motor::getMotor("BackRight")) = ((relativePoint.y + relativePoint.x) * (moveSpeed / relativesum) - turnSpeed);
-            *(Motor::getMotor("FrontLeft")) = ((relativePoint.y + relativePoint.x) * (moveSpeed / relativesum) + turnSpeed);
-            *(Motor::getMotor("FrontRight")) = ((relativePoint.y - relativePoint.x) * (moveSpeed / relativesum) - turnSpeed);
+            *(sRobot->getMotor("BackLeft")) = ((relativePoint.y - relativePoint.x) * (moveSpeed / relativesum) + turnSpeed);
+            *(sRobot->getMotor("BackRight")) = ((relativePoint.y + relativePoint.x) * (moveSpeed / relativesum) - turnSpeed);
+            *(sRobot->getMotor("FrontLeft")) = ((relativePoint.y + relativePoint.x) * (moveSpeed / relativesum) + turnSpeed);
+            *(sRobot->getMotor("FrontRight")) = ((relativePoint.y - relativePoint.x) * (moveSpeed / relativesum) - turnSpeed);
             printf("\nmoveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)sOdom->moveDist, (int)moveSpeed, (int)sOdom->turnErr, (int)turnSpeed);
         }
         else {
