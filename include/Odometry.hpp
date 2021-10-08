@@ -78,6 +78,7 @@ class Odometry {
     public:
     static Odometry* Instance();
     static void FPS(void* params);
+    static void motorFPS(void* params);
     static void oldmoveTo(void* params);
     static void moveTo(void* params);
     static void tmoveTo(void* params);

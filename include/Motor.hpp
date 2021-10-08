@@ -33,5 +33,7 @@ class MotorGroup {
     MotorGroup();
     MotorGroup(std::string motorGroupName, std::vector<std::shared_ptr<Motor>> motorGroupMotors);
     void operator=(std::int32_t voltage);
+    double getEncoders();
+    void resetEncoders();
     void stop(brakeType brake = brakeType::coast);
 };

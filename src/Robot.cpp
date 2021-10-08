@@ -12,10 +12,10 @@ Robot::Robot() {
 	makeMotorGroup("RightDrive", {"BackRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
 
-	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 1);
-	sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
-	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
-	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 5);
+	// sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 1);
+	// sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
+	// sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
+	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 21);
 }
 
 Robot* Robot::Instance() {

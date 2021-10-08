@@ -15,7 +15,7 @@ Sensor::Sensor(std::string sensorName, sensorClass sensorType, std::uint8_t sens
     if ((sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation) && (sensorPort < 1 || sensorPort > 21)) {
         throw std::invalid_argument("inertial/vision port 1 - 21 only");
     }
-    else if (sensorPort < 1 || sensorPort > 8) {
+    else if (sensorPort < 1 || sensorPort > 8 && !(sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation)) {
         throw std::invalid_argument("triport 1 - 8 only");
     }
     else if ((sensorType == sensorClass::ultrasonic || sensorType == sensorClass::encoder) && (sensorPort % 2 != 1)) {

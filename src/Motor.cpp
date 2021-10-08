@@ -42,6 +42,20 @@ void MotorGroup::operator=(std::int32_t voltage) {
     }
 }
 
+double MotorGroup::getEncoders() {
+    double totalVal = 0;
+    for (auto const& motor : this->motors) {
+        totalVal += motor.get()->getMotor()->get_position();
+    }
+    return (totalVal / this->motors.size());
+}
+
+void MotorGroup::resetEncoders() {
+    for (auto const& motor : this->motors) {
+        motor.get()->getMotor()->tare_position();
+    }
+}
+
 //coasts by default
 void MotorGroup::stop(brakeType brake) {
     *(this) = 0;

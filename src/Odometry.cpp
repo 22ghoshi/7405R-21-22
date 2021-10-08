@@ -59,6 +59,32 @@ void Odometry::FPS(void* params) {
     }
 }
 
+void Odometry::motorFPS(void* params) {
+    double previousHeading = sOdom->currentPos.h;
+    while(true) {
+        sOdom->currentPos.h = sRobot->getInertial("Inertial")->get_rotation();
+        double heading = sOdom->currentPos.h.load();
+
+        double deltaRotation = heading - previousHeading;
+        double verticalMovement = sRobot->getMotorGroup("Drive")->getEncoders();
+
+        Point deltaPoint;
+        deltaPoint.x = (verticalMovement * sin(sOdom->toRadians(heading)));
+        deltaPoint.y = (verticalMovement * cos(sOdom->toRadians(heading)));
+
+        sOdom->currentPos += deltaPoint;
+
+        pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
+		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
+        pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
+
+        sRobot->getMotorGroup("Drive")->resetEncoders();
+        previousHeading = heading;
+        
+        pros::delay(20);
+    }
+}
+
 void Odometry::oldmoveTo(void* params) {
     pros::delay(20);
     double turn;

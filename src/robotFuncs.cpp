@@ -19,8 +19,29 @@ namespace robotFuncs {
             int lefty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
             int rightx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
             int righty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-            sRobot->tank(lefty, righty);
+            sRobot->arcade(lefty, rightx);
             pros::delay(20);
         }
+    }
+
+    void resetMotors() {
+        sRobot->getMotorGroup("Drive")->resetEncoders();
+    }
+
+    void nothing() {
+        //
+    }
+
+    void testmove() {
+        Thread::pauseTask("drive");
+        Thread::startTask("move", Odometry::moveTo);
+        pros::delay(100);
+        sOdom->setTarget(0, 500, 0, {0.15, 0, 0.2}, 20);
+        sOdom->setTarget(500, 500, 90, {0.15, 0.0, 0.2}, 20, {1.5, 0.0, 0.1});
+        // sOdom->setTarget(0, 0, 0);
+        sOdom->waitUntilStop();
+        sRobot->stopDrive();
+        Thread::killTask("move");
+        Thread::resumeTask("drive");
     }
 }
