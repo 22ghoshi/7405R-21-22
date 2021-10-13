@@ -45,11 +45,9 @@ void initialize() {
 	pros::lcd::register_btn2_cb(on_right_button);
 
 	Robot::Instance();
-	sRobot->getInertial("Inertial")->reset();
-    pros::delay(3000);
 
 	Odometry::Instance();
-	Thread::startTask("fps", Odometry::motorFPS);
+	Thread::startTask("fps", Odometry::rotFPS);
 }
 
 /**

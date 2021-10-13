@@ -19,15 +19,13 @@ void opcontrol() {
 	}
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_A, robotFuncs::resetMotors);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::testmove);
 
 	while (true) {
-		pros::lcd::set_text(4, "Drive: " + std::to_string(sRobot->getMotorGroup("Drive")->getEncoders()));
-		pros::lcd::set_text(5, "LeftDrive: " + std::to_string(sRobot->getMotorGroup("LeftDrive")->getEncoders()));
-		pros::lcd::set_text(6, "RightDrive: " + std::to_string(sRobot->getMotorGroup("RightDrive")->getEncoders()));
-		// pros::lcd::set_text(7, "Inertial" + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
-		
+		// pros::lcd::set_text(4, "Right: " + std::to_string(sRobot->getRotation("Right")->get_position()));
+		// pros::lcd::set_text(5, "Left: " + std::to_string(sRobot->getRotation("Left")->get_position()));
+		pros::lcd::set_text(5, "turnErr: " + std::to_string(sOdom->turnErr));
+
 		sController->act();
 		pros::delay(20);
 	}

@@ -42,6 +42,7 @@ void MotorGroup::operator=(std::int32_t voltage) {
     }
 }
 
+//returns average of all encoders in group
 double MotorGroup::getEncoders() {
     double totalVal = 0;
     for (auto const& motor : this->motors) {
@@ -66,12 +67,12 @@ void MotorGroup::stop(brakeType brake) {
             }
             break;
         case brakeType::brake:
-            for (auto& motor : this->motors) {
+            for (auto const& motor : this->motors) {
                 motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
             }
             break;
         case brakeType::hold:
-            for (auto& motor : this->motors) {
+            for (auto const& motor : this->motors) {
                 motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
             break;

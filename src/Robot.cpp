@@ -4,10 +4,10 @@ Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
 	//dead ports
-	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 1);
-	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 15, true);
-	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 9);
-	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 17, true);
+	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 17);
+	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 9, true);
+	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 15);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 1, true);
 	makeMotorGroup("LeftDrive", {"BackLeft", "FrontLeft"});
 	makeMotorGroup("RightDrive", {"BackRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
@@ -16,6 +16,14 @@ Robot::Robot() {
 	// sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
 	// sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 21);
+	sensors["Left Rotation"] = std::make_unique<Sensor>("Left", sensorClass::rotation, 12);
+	sensors["Right Rotation"] = std::make_unique<Sensor>("Right", sensorClass::rotation, 10);
+
+	getInertial("Inertial")->reset();
+	pros::delay(3000);
+	getRotation("Right")->reverse();
+	getRotation("Left")->reset_position();
+	getRotation("Right")->reset_position();
 }
 
 Robot* Robot::Instance() {

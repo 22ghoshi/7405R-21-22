@@ -24,10 +24,6 @@ namespace robotFuncs {
         }
     }
 
-    void resetMotors() {
-        sRobot->getMotorGroup("Drive")->resetEncoders();
-    }
-
     void nothing() {
         //
     }
@@ -36,8 +32,8 @@ namespace robotFuncs {
         Thread::pauseTask("drive");
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
-        sOdom->setTarget(0, 500, 0, {0.15, 0, 0.2}, 20);
-        sOdom->setTarget(500, 500, 90, {0.15, 0.0, 0.2}, 20, {1.5, 0.0, 0.1});
+        sOdom->setTargetPoint(0, 500, {0.25, 0, 0.2}, 20);
+        sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
         // sOdom->setTarget(0, 0, 0);
         sOdom->waitUntilStop();
         sRobot->stopDrive();
