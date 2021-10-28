@@ -5,4 +5,8 @@ namespace robotFuncs {
     void resetMotors();
     void nothing();
     void testmove();
+    void toggleLift();
+    void toggleConveyor();
+    void slowConveyor();
+    void fastConveyor();
 }

@@ -8,10 +8,12 @@ Robot::Robot() {
 	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 9, true);
 	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 15);
 	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 1, true);
-	makeMotorGroup("LeftDrive", {"BackLeft", "FrontLeft"});
+	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 5);
 	makeMotorGroup("RightDrive", {"BackRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
-
+	pistons["RightLift"] = std::make_unique<Piston>("RightLift", 3);
+	pistons["LeftLift"] = std:: make_unique<Piston>("LeftLift", 4);
+	
 	// sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 1);
 	// sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
 	// sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
@@ -70,6 +72,10 @@ pros::Motor* Robot::getMotor(std::string name) {
 
 MotorGroup* Robot::getMotorGroup(std::string name) {
 	return motorGroups.at(name).get();
+}
+
+pros::ADIDigitalOut* Robot::getPiston(std::string name) {
+	return pistons.at(name).get()->getPiston();
 }
 
 pros::ADIButton* Robot::getButton(std::string name) {

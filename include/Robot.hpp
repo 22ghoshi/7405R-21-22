@@ -24,6 +24,7 @@ class Robot {
     
     std::map<std::string, std::shared_ptr<Motor>> motors;
     std::map<std::string, std::unique_ptr<MotorGroup>> motorGroups;
+    std::map<std::string, std::unique_ptr<Piston>> pistons;
     std::map<std::string, std::unique_ptr<Sensor>> sensors;
 
     public:
@@ -36,6 +37,7 @@ class Robot {
     void makeMotorGroup(std::string name, std::vector<std::string> motorNames);
     pros::Motor* getMotor(std::string name);
     MotorGroup* getMotorGroup(std::string name);
+    pros::ADIDigitalOut* getPiston(std::string name);
     pros::ADIButton* getButton(std::string name);
     pros::ADILineSensor* getLine(std::string name);
     pros::ADIPotentiometer* getPotentiometer(std::string name);

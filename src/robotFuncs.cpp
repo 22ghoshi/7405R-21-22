@@ -1,6 +1,10 @@
 #include "includes.hpp"
 
 namespace robotFuncs {
+    bool liftState = false;
+    bool conveyorState = false;
+    int conveyorSpeed = 0;
+
     void drive(void* params) {
         while (true) {
             // int power = (int)(127.0 * std::pow((double)lefty / 127, (double)13 / 9));
@@ -39,5 +43,37 @@ namespace robotFuncs {
         sRobot->stopDrive();
         Thread::killTask("move");
         Thread::resumeTask("drive");
+    }
+
+    void toggleLift() {
+        liftState = 1 - liftState;
+        sRobot->getPiston("RightLift")->set_value(liftState);
+        sRobot->getPiston("LeftLift")->set_value(liftState);
+    }
+
+    void toggleConveyor() {
+        conveyorState = 1 - conveyorState;
+        if(conveyorState) {
+            conveyorSpeed = 60;
+            *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+        }
+        else {
+            conveyorSpeed = 0;
+            *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+        }
+    }
+
+    void slowConveyor() {
+        if(conveyorState) {
+            conveyorSpeed -= 10;
+            *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+        }
+    }
+
+    void fastConveyor() {
+        if(conveyorState) {
+            conveyorSpeed += 10;
+            *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+        }
     }
 }

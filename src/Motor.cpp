@@ -78,3 +78,20 @@ void MotorGroup::stop(brakeType brake) {
             break;
     }
 }
+
+Piston::Piston() {}
+
+Piston::Piston(std::string pistonName, std::uint8_t pistonPort) {
+    if (pistonPort < 1 || pistonPort > 8) {
+        throw std::invalid_argument("piston triport 1 - 8 only");
+    }
+
+    this->name = pistonName;
+    this->port = pistonPort;
+
+    piston = std::make_unique<pros::ADIDigitalOut>(port);
+}
+
+pros::ADIDigitalOut* Piston::getPiston() {
+    return this->piston.get();
+}

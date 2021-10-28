@@ -37,3 +37,15 @@ class MotorGroup {
     void resetEncoders();
     void stop(brakeType brake = brakeType::coast);
 };
+
+class Piston {
+    private:
+    std::unique_ptr<pros::ADIDigitalOut> piston;
+    std::string name;
+    std::uint8_t port;
+
+    public:
+    Piston();
+    Piston(std::string pistonName, std::uint8_t pistonPort);
+    pros::ADIDigitalOut* getPiston();
+};

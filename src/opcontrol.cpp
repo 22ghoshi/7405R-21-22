@@ -20,11 +20,15 @@ void opcontrol() {
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::testmove);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_A, robotFuncs::toggleLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::toggleConveyor);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L1, robotFuncs::slowConveyor);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L2, robotFuncs::fastConveyor);
 
 	while (true) {
 		// pros::lcd::set_text(4, "Right: " + std::to_string(sRobot->getRotation("Right")->get_position()));
 		// pros::lcd::set_text(5, "Left: " + std::to_string(sRobot->getRotation("Left")->get_position()));
-		pros::lcd::set_text(5, "turnErr: " + std::to_string(sOdom->turnErr));
+		// pros::lcd::set_text(5, "turnErr: " + std::to_string(sOdom->turnErr));
 
 		sController->act();
 		pros::delay(20);
