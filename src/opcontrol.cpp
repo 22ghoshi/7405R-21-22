@@ -29,7 +29,7 @@ void opcontrol() {
 		// pros::lcd::set_text(4, "Right: " + std::to_string(sRobot->getRotation("Right")->get_position()));
 		// pros::lcd::set_text(5, "Left: " + std::to_string(sRobot->getRotation("Left")->get_position()));
 		// pros::lcd::set_text(5, "turnErr: " + std::to_string(sOdom->turnErr));
-
+			
 		sController->act();
 		pros::delay(20);
 	}

@@ -4,7 +4,7 @@ namespace robotFuncs {
     bool liftState = false;
     bool conveyorState = false;
     int conveyorSpeed = 0;
-
+    
     void drive(void* params) {
         while (true) {
             // int power = (int)(127.0 * std::pow((double)lefty / 127, (double)13 / 9));
@@ -54,12 +54,14 @@ namespace robotFuncs {
     void toggleConveyor() {
         conveyorState = 1 - conveyorState;
         if(conveyorState) {
-            conveyorSpeed = 60;
+            conveyorSpeed = 75;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
         else {
             conveyorSpeed = 0;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
     }
 
@@ -67,6 +69,7 @@ namespace robotFuncs {
         if(conveyorState) {
             conveyorSpeed -= 10;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
     }
 
@@ -74,6 +77,7 @@ namespace robotFuncs {
         if(conveyorState) {
             conveyorSpeed += 10;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
+            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
     }
 }
