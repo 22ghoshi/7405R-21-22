@@ -1,11 +1,36 @@
 #include "includes.hpp"
 
-void red() {
+void wp() {
+	//put down lift and move forward
+	robotFuncs::toggleLift();
+	sOdom->setTargetPoint(0, 600, {0.2, 0.0, 0.15});
+	sOdom->waitUntilStop();
 
+	//pick up mogo
+	robotFuncs::toggleLift();
+	pros::delay(1500);
+
+	// //move back and load rings
+	// sOdom->setTargetPoint(0, , { , , });
+	// robotFuncs::toggleConveyor();
+	// pros::delay(2500);
+	// robotFuncs::toggleConveyor(); 
 }
 
-void blue() {
+void nowp() {
+	// //move forward
+	// sOdom->setTargetPoint(0, , { , , });
+	// sOdom->waitUntilStop();
 
+	// //pick up mogo
+	// robotFuncs::toggleLift();
+	// pros::delay(1500);
+
+	// //move back and load rings
+	// sOdom->setTargetPoint(0, , { , , });
+	// robotFuncs::toggleConveyor();
+	// pros::delay(2500);
+	// robotFuncs::toggleConveyor(); 
 }
 
 void test() {
@@ -26,11 +51,11 @@ void test() {
 void autonomous() {
     Thread::startTask("move", Odometry::moveTo);
 	switch (autonselect) {
-		case autonSelect::red:
-			red();
+		case autonSelect::wp:
+			wp();
 			break;
-		case autonSelect::blue:
-			blue();
+		case autonSelect::nowp:
+			nowp();
 			break;
 		case autonSelect::test:
 			test();

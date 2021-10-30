@@ -4,11 +4,12 @@ Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
 	//dead ports
-	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 17);
-	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 9, true);
-	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 15);
-	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 1, true);
-	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 5, true);
+	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 18);
+	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 20, true);
+	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 2);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 7, true);
+	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 21, true);
+	makeMotorGroup("LeftDrive", {"BackLeft", "FrontLeft"});
 	makeMotorGroup("RightDrive", {"BackRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
 	pistons["RightLift"] = std::make_unique<Piston>("RightLift", 3);
@@ -17,9 +18,9 @@ Robot::Robot() {
 	// sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 1);
 	// sensors["Middle Encoder"] = std::make_unique<Sensor>("Middle", sensorClass::encoder, 3);
 	// sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
-	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 21);
-	sensors["Left Rotation"] = std::make_unique<Sensor>("Left", sensorClass::rotation, 12);
-	sensors["Right Rotation"] = std::make_unique<Sensor>("Right", sensorClass::rotation, 10);
+	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 6);
+	sensors["Left Rotation"] = std::make_unique<Sensor>("Left", sensorClass::rotation, 5);
+	sensors["Right Rotation"] = std::make_unique<Sensor>("Right", sensorClass::rotation, 9);
 
 	getInertial("Inertial")->reset();
 	pros::delay(3000);

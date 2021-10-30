@@ -1,5 +1,5 @@
 #pragma once
 
-void red();
-void blue();
+void wp();
+void nowp();
 void test();

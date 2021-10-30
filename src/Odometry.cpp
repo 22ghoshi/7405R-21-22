@@ -66,7 +66,7 @@ void Odometry::rotFPS(void* params) {
         double heading = sOdom->currentPos.h.load();
 
         double deltaRotation = heading - previousHeading;
-        double verticalMovement = (sRobot->getRotation("Left")->get_position() + sRobot->getRotation("Right")->get_position()) / 200;
+        double verticalMovement = (sRobot->getRotation("Left")->get_position() + sRobot->getRotation("Right")->get_position()) / 200.0;
 
         Point deltaPoint;
         deltaPoint.x = (verticalMovement * sin(sOdom->toRadians(heading)));
@@ -209,6 +209,7 @@ void Odometry::moveTo(void* params) {
             double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
             
             sRobot->arcade(0, turnSpeed);
+            printf("\nmoveDist = %d, moveSpeed = turnafter, turnErr = %d, turnSpeed = %d", (int)sOdom->moveDist, (int)sOdom->turnErr, (int)turnSpeed);
         }
         else if (fabs(moveTurnErr) > sOdom->tacc) {
             tP = moveTurnErr;
@@ -219,6 +220,7 @@ void Odometry::moveTo(void* params) {
             double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
             
             sRobot->arcade(0, turnSpeed);
+            printf("\nmoveDist = %d, moveSpeed = turnbefore, turnErr = %d, turnSpeed = %d", (int)sOdom->moveDist, (int)sOdom->turnErr, (int)turnSpeed);
         }
         else if (sOdom->moveDist > sOdom->macc) {
             tP = sOdom->turnErr;
@@ -246,6 +248,7 @@ void Odometry::moveTo(void* params) {
             }
             
             sRobot->arcade(moveSpeed, turnSpeed);
+            printf("\nmoveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)sOdom->moveDist, (int)moveSpeed, (int)sOdom->turnErr, (int)turnSpeed);
         }
         else {
             n = 0;

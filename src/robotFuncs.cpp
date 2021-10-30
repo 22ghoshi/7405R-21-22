@@ -56,12 +56,10 @@ namespace robotFuncs {
         if(conveyorState) {
             conveyorSpeed = 75;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
-            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
         else {
             conveyorSpeed = 0;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
-            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
     }
 
@@ -69,7 +67,6 @@ namespace robotFuncs {
         if(conveyorState) {
             conveyorSpeed -= 10;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
-            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
     }
 
@@ -77,7 +74,6 @@ namespace robotFuncs {
         if(conveyorState) {
             conveyorSpeed += 10;
             *(sRobot->getMotor("Conveyor")) = conveyorSpeed;
-            pros::lcd::set_text(5, std::to_string(conveyorSpeed));
         }
     }
 }

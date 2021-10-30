@@ -1,8 +1,8 @@
 #include "includes.hpp"
 
 //vector of autons
-std::vector<std::string> autonNames{"red", "blue", "test"};
-autonSelect autonselect = autonSelect::red;
+std::vector<std::string> autonNames{"wp", "nowp", "test"};
+autonSelect autonselect = autonSelect::wp;
 
 void on_center_button() {
 	
