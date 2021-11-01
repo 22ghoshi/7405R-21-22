@@ -22,8 +22,8 @@ void wp() {
 void nowp() {
 	//put down lift and move forward
 	robotFuncs::toggleLift();
-	pros::delay(1500);
-	sOdom->setTargetPoint(0, 550, {0.37, 0.0015, 0.1}, 20);
+	pros::delay(1750);
+	sOdom->setTargetPoint(0, 720, {0.35, 0.0011, 0.1}, 20);
 	sOdom->waitUntilStop();
 
 	//pick up mogo
@@ -31,6 +31,7 @@ void nowp() {
 	pros::delay(1500);
 
 	//load rings
+	sOdom->setTargetPoint(0, 250, {0.37, 0.0015, 0.1}, 20);
 	robotFuncs::toggleConveyor();
 	pros::delay(2500);
 	robotFuncs::toggleConveyor(); 
