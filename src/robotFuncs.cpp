@@ -36,8 +36,8 @@ namespace robotFuncs {
         Thread::pauseTask("drive");
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
-        sOdom->setTargetPoint(0, 500, {0.25, 0, 0.2}, 20);
-        sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
+        sOdom->setTargetPoint(0, -200, {0.37, 0.0, 0.1}, 20);
+        // sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
         // sOdom->setTarget(0, 0, 0);
         sOdom->waitUntilStop();
         sRobot->stopDrive();

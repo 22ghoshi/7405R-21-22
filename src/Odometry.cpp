@@ -14,7 +14,7 @@ Odometry::Odometry() {
     mkP = 0;
     mkI = 0;
     mkD = 0;
-    macc = 50;
+    macc = 20;
     tkP = 0;
     tkI = 0;
     tkD = 0;
@@ -172,6 +172,7 @@ void Odometry::moveTo(void* params) {
     Point movePoint;
     double moveTurnErr;
 
+    int direction;
     double mP = 0, mI = 0, mD = 0;
     double prevMoveDist;
 
@@ -192,6 +193,10 @@ void Odometry::moveTo(void* params) {
         sOdom->moveDist = sOdom->currentPos.distanceTo(sOdom->targetPos);
         sOdom->turnErr = sOdom->targetPos.h.load() - sOdom->currentPos.h.load();
         moveTurnErr = movePoint.h.load() - turn;
+        direction = cos(sOdom->toRadians(moveTurnErr)) > 0 ? 1 : -1;
+        if(direction < 0) {
+            moveTurnErr = moveTurnErr > 0 ? movePoint.h.load() - 180 : movePoint.h.load() + 180;
+        }
 
         n += 1;
         if (n == 1) {
@@ -247,8 +252,8 @@ void Odometry::moveTo(void* params) {
                 turnSpeed = maxTurnSpeed;
             }
             
-            sRobot->arcade(moveSpeed, turnSpeed);
-            printf("\nmoveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)sOdom->moveDist, (int)moveSpeed, (int)sOdom->turnErr, (int)turnSpeed);
+            sRobot->arcade(moveSpeed * direction, turnSpeed);
+            printf("\ndirection = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", direction, (int)sOdom->moveDist, (int)moveSpeed, (int)sOdom->turnErr, (int)turnSpeed);
         }
         else {
             n = 0;
