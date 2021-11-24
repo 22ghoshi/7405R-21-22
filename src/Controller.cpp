@@ -67,3 +67,7 @@ std::int32_t Controller::getAnalog(pros::controller_analog_e_t stick) {
 bool Controller::getDigital(pros::controller_digital_e_t button) {
     return buttonStatus[button];
 }
+
+bool Controller::getDigitalNewPress(pros::controller_digital_e_t button) {
+    return buttonNewPressStatus[button];
+}

@@ -47,7 +47,7 @@ void initialize() {
 	Robot::Instance();
 
 	Odometry::Instance();
-	Thread::startTask("fps", Odometry::rotFPS);
+	// Thread::startTask("fps", Odometry::rotFPS);
 }
 
 /**

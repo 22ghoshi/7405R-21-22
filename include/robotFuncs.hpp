@@ -5,8 +5,10 @@ namespace robotFuncs {
     void resetMotors();
     void nothing();
     void testmove();
-    void toggleLift();
+    void mLiftPID(void* params);
+    void move_mLift();
+    void toggle_pLift();
     void toggleConveyor();
-    void slowConveyor();
-    void fastConveyor();
+    void clamp();
+    void holdClamp();
 }

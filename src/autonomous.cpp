@@ -2,13 +2,13 @@
 
 void wp() {
 	//put down lift and move forward
-	robotFuncs::toggleLift();
+	robotFuncs::toggle_pLift();
 	pros::delay(1750);
 	sOdom->setTargetPoint(0, 550, {0.37, 0.0015, 0.1}, 20);
 	sOdom->waitUntilStop();
 
 	//pick up mogo
-	robotFuncs::toggleLift();
+	robotFuncs::toggle_pLift();
 	pros::delay(1000);
 
 	//move back and load rings
@@ -21,13 +21,13 @@ void wp() {
 
 void nowp() {
 	//put down lift and move forward
-	robotFuncs::toggleLift();
+	robotFuncs::toggle_pLift();
 	pros::delay(1750);
 	sOdom->setTargetPoint(0, 720, {0.35, 0.0011, 0.1}, 20);
 	sOdom->waitUntilStop();
 
 	//pick up mogo
-	robotFuncs::toggleLift();
+	robotFuncs::toggle_pLift();
 	pros::delay(1500);
 
 	//load rings

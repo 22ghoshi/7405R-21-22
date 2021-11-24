@@ -34,4 +34,5 @@ class Controller {
 
     std::int32_t getAnalog(pros::controller_analog_e_t stick);
     bool getDigital(pros::controller_digital_e_t button);
+    bool getDigitalNewPress(pros::controller_digital_e_t button);
 };
