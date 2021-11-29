@@ -20,14 +20,16 @@ void opcontrol() {
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
 	Thread::startTask("lift", robotFuncs::mLiftPID);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::toggle_pLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::move_mLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_Y, robotFuncs::move_mLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::move_mLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_A, robotFuncs::move_mLift);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::toggleConveyor);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::toggleConveyor);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::toggle_pLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L1, robotFuncs::toggleConveyor);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L2, robotFuncs::toggleConveyor);
 	sController->registerButton(pros::E_CONTROLLER_DIGITAL_R1, robotFuncs::clamp, robotFuncs::holdClamp);
 	sController->registerButton(pros::E_CONTROLLER_DIGITAL_R2, robotFuncs::clamp, robotFuncs::holdClamp);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_LEFT, robotFuncs::testmove);
 
 
 	while (true) {

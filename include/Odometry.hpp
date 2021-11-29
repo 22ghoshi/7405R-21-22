@@ -76,6 +76,7 @@ class Odometry {
     public:
     double moveDist;
     double turnErr;
+    double moveTurnErr;
     
     static Odometry* Instance();
     static void FPS(void* params);
@@ -86,7 +87,7 @@ class Odometry {
     void setTarget(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void setTargetNow(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void setTargetTurn(double setTurn, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2);
-    void setTargetPoint(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20);
+    void setTargetPoint(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void waitUntilStop();
     double toRadians(double degrees);
     double toDegrees(double radians);

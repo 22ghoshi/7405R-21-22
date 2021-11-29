@@ -1,5 +1,6 @@
 #pragma once
 
-void wp();
-void nowp();
+void left();
+void middle();
+void right();
 void test();

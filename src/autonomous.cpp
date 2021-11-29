@@ -1,40 +1,45 @@
 #include "includes.hpp"
 
-void wp() {
-	//put down lift and move forward
-	robotFuncs::toggle_pLift();
-	pros::delay(1750);
-	sOdom->setTargetPoint(0, 550, {0.37, 0.0015, 0.1}, 20);
-	sOdom->waitUntilStop();
+void left() {
+	//straight to neutral mogo
+	sOdom->setTarget(0, 1565, 0, {0.3, 0.00001, 0.4}, 20, {2.0, 0.1, 0.4}, 5);
 
-	//pick up mogo
-	robotFuncs::toggle_pLift();
-	pros::delay(1000);
 
-	//move back and load rings
-	sOdom->setTargetPoint(0, 130, {0.37, 0.0015, 0.1}, 20);
-	sOdom->waitUntilStop();
-	robotFuncs::toggleConveyor();
-	pros::delay(2500);
-	robotFuncs::toggleConveyor(); 
+	//back up, drop mogo
+	sOdom->setTarget(483, 1093, -40, {0.2, 0.00005, 0.15}, 20, {2.0, 0.0075, 1.5}, 5.0);
+
+	//align with and get alliance mogo
+
+	//pull out and score rings
+
+	//repeat for preloads
+
 }
 
-void nowp() {
-	//put down lift and move forward
-	robotFuncs::toggle_pLift();
-	pros::delay(1750);
-	sOdom->setTargetPoint(0, 720, {0.35, 0.0011, 0.1}, 20);
-	sOdom->waitUntilStop();
+void middle() {
+	//straight to neutral mogo
 
-	//pick up mogo
-	robotFuncs::toggle_pLift();
-	pros::delay(1500);
+	//back up, drop mogo
 
-	//load rings
-	sOdom->setTargetPoint(0, 250, {0.37, 0.0015, 0.1}, 20);
-	robotFuncs::toggleConveyor();
-	pros::delay(2500);
-	robotFuncs::toggleConveyor(); 
+	//align with and get alliance mogo
+
+	//pull out and score rings
+
+	//repeat for preloads
+
+}
+
+void right() {
+	//straight to neutral mogo
+
+	//back up, drop mogo
+
+	//align with and get alliance mogo
+
+	//pull out and score rings
+
+	//repeat for preloads
+
 }
 
 void test() {
@@ -55,11 +60,14 @@ void test() {
 void autonomous() {
     Thread::startTask("move", Odometry::moveTo);
 	switch (autonselect) {
-		case autonSelect::wp:
-			wp();
+		case autonSelect::left:
+			left();
 			break;
-		case autonSelect::nowp:
-			nowp();
+		case autonSelect::middle:
+			middle();
+			break;
+		case autonSelect::right:
+			right();
 			break;
 		case autonSelect::test:
 			test();

@@ -1,8 +1,8 @@
 #include "includes.hpp"
 
 //vector of autons
-std::vector<std::string> autonNames{"wp", "nowp", "test"};
-autonSelect autonselect = autonSelect::wp;
+std::vector<std::string> autonNames{"left", "middle", "right", "test"};
+autonSelect autonselect = autonSelect::left;
 
 void on_center_button() {
 	
@@ -47,7 +47,7 @@ void initialize() {
 	Robot::Instance();
 
 	Odometry::Instance();
-	// Thread::startTask("fps", Odometry::rotFPS);
+	Thread::startTask("fps", Odometry::rotFPS);
 }
 
 /**

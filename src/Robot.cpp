@@ -15,11 +15,10 @@ Robot::Robot() {
 	motors["Left_mLift"] = std::make_shared<Motor>("Left_mLift", motorGearset::GS100, 6, true);
 	motors["Right_mLift"] = std::make_shared<Motor>("Right_mLift", motorGearset::GS100, 2);
 	makeMotorGroup("mLift", {"Left_mLift", "Right_mLift"});
-	//1040- 1212, 2626, 2216, -2815
 	motors["Clamp"] = std::make_shared<Motor>("Clamp", motorGearset::GS100, 4, true);
 	
-	pistons["Right_pLift"] = std::make_unique<Piston>("Right_pLift", 1);
-	pistons["Left_pLift"] = std:: make_unique<Piston>("Left_pLift", 2);
+	pistons["Right_pLift"] = std::make_unique<Piston>("Right_pLift", 6);
+	pistons["Left_pLift"] = std:: make_unique<Piston>("Left_pLift", 7);
 	
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 13);
 	sensors["Left Rotation"] = std::make_unique<Sensor>("Left", sensorClass::rotation, 7);

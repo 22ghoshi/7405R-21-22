@@ -4,5 +4,5 @@
 #include <string>
 #include <vector>
 
-enum class autonSelect { wp = 0, nowp, test };
+enum class autonSelect { left = 0, middle, right, test };
 extern autonSelect autonselect;

@@ -1,9 +1,8 @@
 #include "includes.hpp"
 
 namespace robotFuncs {
-    enum class mLiftStates {low = 1115, mid = 2216, high = 2626};
+    enum class mLiftStates {down = 1010, low = 1150, mid = 2216, high = 2626};
     mLiftStates mLiftState = mLiftStates::low;
-    double liftTarget = 1200;
     bool pLiftState = false;
     bool conveyorState = false;
     int conveyorDirection = 1;
@@ -26,7 +25,10 @@ namespace robotFuncs {
             int lefty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
             int rightx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
             int righty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-            sRobot->arcade(lefty, rightx);
+            int power = lefty > 0 ? ((int)(127.0 * std::pow((double)lefty / 127, (double)13 / 9))) : -1 * ((int)(127.0 * std::pow((double)(-lefty) / 127, (double)13 / 9)));
+            int turn = rightx > 0 ? ((int)(127.0 * std::pow((double)rightx / 127, (double)13 / 9))) : -1 * ((int)(127.0 * std::pow((double)(-rightx) / 127, (double)13 / 9)));
+            sRobot->arcade(power, turn);
+            // sRobot->arcade(lefty, rightx);
             pros::delay(20);
         }
     }
@@ -39,7 +41,7 @@ namespace robotFuncs {
         Thread::pauseTask("drive");
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
-        sOdom->setTargetPoint(0, -200, {0.37, 0.0, 0.1}, 20);
+        sOdom->setTarget(300, -300, -45, {0.3, 0.001, 0.13}, 20, {3.0, 0.001, 0.5}, 5.0);
         // sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
         // sOdom->setTarget(0, 0, 0);
         sOdom->waitUntilStop();
@@ -58,7 +60,7 @@ namespace robotFuncs {
         int n = 0;
 
         while(true) {
-            err = liftTarget - sRobot->getPotentiometer("mLift")->get_value();
+            err = (double)mLiftState - sRobot->getPotentiometer("mLift")->get_value();
 
             n += 1;
             if (n == 1) {
@@ -84,14 +86,17 @@ namespace robotFuncs {
     }
 
     void move_mLift() {
-        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
-            liftTarget = 1200;
+        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
+            mLiftState = mLiftStates::down;
+        } 
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
+            mLiftState = mLiftStates::low;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
-            liftTarget = 2216;
+            mLiftState = mLiftStates::mid;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_A)) {
-            liftTarget = 2626;
+            mLiftState = mLiftStates::high;
         }
     }
 
@@ -102,7 +107,7 @@ namespace robotFuncs {
     }
 
     void toggleConveyor() {
-        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
+        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_L1)) {
             if (conveyorDirection == 1) {
                 conveyorState = 1 - conveyorState;
             }
@@ -111,7 +116,7 @@ namespace robotFuncs {
                 conveyorState = true;
             }
         }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_L2)) {
             if (conveyorDirection == -1) {
                 conveyorState = 1 - conveyorState;
             }
