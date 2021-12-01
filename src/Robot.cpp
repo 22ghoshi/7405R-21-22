@@ -15,7 +15,7 @@ Robot::Robot() {
 	motors["Left_mLift"] = std::make_shared<Motor>("Left_mLift", motorGearset::GS100, 6, true);
 	motors["Right_mLift"] = std::make_shared<Motor>("Right_mLift", motorGearset::GS100, 2);
 	makeMotorGroup("mLift", {"Left_mLift", "Right_mLift"});
-	motors["Clamp"] = std::make_shared<Motor>("Clamp", motorGearset::GS100, 4, true);
+	motors["Clamp"] = std::make_shared<Motor>("Clamp", motorGearset::GS100, 5, true);
 	
 	pistons["Right_pLift"] = std::make_unique<Piston>("Right_pLift", 6);
 	pistons["Left_pLift"] = std:: make_unique<Piston>("Left_pLift", 7);

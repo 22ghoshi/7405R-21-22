@@ -72,6 +72,7 @@ class Odometry {
     double tkD;
     double tacc;
     int moves;
+    int n;
 
     public:
     double moveDist;

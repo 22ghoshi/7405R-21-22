@@ -2,15 +2,23 @@
 
 void left() {
 	//straight to neutral mogo
-	sOdom->setTarget(0, 1565, 0, {0.3, 0.00001, 0.4}, 20, {2.0, 0.1, 0.4}, 5);
+	sOdom->setTarget(0, 1550, 0, {0.23, 0.00001, 0.5}, 20, {1.0, 0.00, 0.4}, 10.0);
+	robotFuncs::auton_mLift(mLiftStates::low);
+	sOdom->waitUntilStop();
+	robotFuncs::toggle_pLift();
+	robotFuncs::auton_clamp();
+	robotFuncs::auton_mLift(mLiftStates::lowmid);
 
 
-	//back up, drop mogo
-	sOdom->setTarget(483, 1093, -40, {0.2, 0.00005, 0.15}, 20, {2.0, 0.0075, 1.5}, 5.0);
+	//turn around and grab alliance mogo
+	sOdom->setTarget(450, 1120, -40, {0.3, 0.00005, 0.2}, 20, {2.0, 0.005, 2.5}, 5.0);
+	sOdom->waitUntilStop();
+	robotFuncs::toggle_pLift();
+	
 
-	//align with and get alliance mogo
+	//turn around parallel with line, drop neutral mogo
 
-	//pull out and score rings
+	//turn parallel to wall, drive forward
 
 	//repeat for preloads
 
@@ -43,7 +51,7 @@ void right() {
 }
 
 void test() {
-	
+
 }
 
 /**
@@ -59,6 +67,7 @@ void test() {
  */
 void autonomous() {
     Thread::startTask("move", Odometry::moveTo);
+	Thread::startTask("lift", robotFuncs::mLiftPID);
 	switch (autonselect) {
 		case autonSelect::left:
 			left();

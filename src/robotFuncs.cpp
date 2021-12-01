@@ -1,7 +1,6 @@
 #include "includes.hpp"
 
 namespace robotFuncs {
-    enum class mLiftStates {down = 1010, low = 1150, mid = 2216, high = 2626};
     mLiftStates mLiftState = mLiftStates::low;
     bool pLiftState = false;
     bool conveyorState = false;
@@ -144,9 +143,26 @@ namespace robotFuncs {
     }
 
     void holdClamp() {
-        if (!(sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) || sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2))) {
+        if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
             *(sRobot->getMotor("Clamp")) = 0;
             sRobot->getMotor("Clamp")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         }
+    }
+
+    void auton_clamp() {
+        *(sRobot->getMotor("Clamp")) = 127;
+        pros::delay(600);
+        *(sRobot->getMotor("Clamp")) = 0;
+        sRobot->getMotor("Clamp")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    }
+
+    void auton_declamp() {
+        *(sRobot->getMotor("Clamp")) = -127;
+        pros::delay(1000);
+        *(sRobot->getMotor("Clamp")) = 0;
+    }
+
+    void auton_mLift(mLiftStates liftState) {
+        mLiftState = liftState;
     }
 }
