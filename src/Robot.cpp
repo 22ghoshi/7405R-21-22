@@ -3,7 +3,7 @@
 Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
-	//dead ports
+	//dead ports 4 5
 	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 3);
 	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 9, true);
 	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 12);
@@ -15,7 +15,7 @@ Robot::Robot() {
 	motors["Left_mLift"] = std::make_shared<Motor>("Left_mLift", motorGearset::GS100, 6, true);
 	motors["Right_mLift"] = std::make_shared<Motor>("Right_mLift", motorGearset::GS100, 2);
 	makeMotorGroup("mLift", {"Left_mLift", "Right_mLift"});
-	motors["Clamp"] = std::make_shared<Motor>("Clamp", motorGearset::GS100, 5, true);
+	motors["Clamp"] = std::make_shared<Motor>("Clamp", motorGearset::GS100, 1, true);
 	
 	pistons["Right_pLift"] = std::make_unique<Piston>("Right_pLift", 6);
 	pistons["Left_pLift"] = std:: make_unique<Piston>("Left_pLift", 7);
