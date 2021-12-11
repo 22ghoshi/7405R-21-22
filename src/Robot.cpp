@@ -4,13 +4,15 @@ Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
 	//dead ports 4 5
-	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS600, 3);
-	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS600, 9, true);
-	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS600, 12);
-	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS600, 14, true);
-	makeMotorGroup("LeftDrive", {"BackLeft", "FrontLeft"});
-	makeMotorGroup("RightDrive", {"BackRight", "FrontRight"});
-	makeMotorGroup("Drive", {"BackLeft", "BackRight", "FrontLeft", "FrontRight"});
+	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 3);
+	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 9, true);
+	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 10);
+	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 11, true);
+	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS200, 12);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 14, true);
+	makeMotorGroup("LeftDrive", {"BackLeft", "MidLeft", "FrontLeft"});
+	makeMotorGroup("RightDrive", {"BackRight", "MidRight", "FrontRight"});
+	makeMotorGroup("Drive", {"BackLeft", "BackRight", "MidLeft", "MidRight", "FrontLeft", "FrontRight"});
 	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 20, true);
 	motors["Left_mLift"] = std::make_shared<Motor>("Left_mLift", motorGearset::GS100, 6, true);
 	motors["Right_mLift"] = std::make_shared<Motor>("Right_mLift", motorGearset::GS100, 2);
