@@ -61,8 +61,8 @@ class Odometry {
     private:
     Odometry();
     static Odometry* pInstance;
-    // Point currentPos;
-    // Point targetPos;
+    Point currentPos;
+    Point targetPos;
     double mkP;
     double mkI;
     double mkD;
@@ -74,31 +74,21 @@ class Odometry {
     int n;
 
     public:
-    double targetPos;
-    double currentPos;
-    double targetTurn;
-    double currentTurn;
     double moveDist;
     double turnErr;
     int moves;
-    // double moveTurnErr;
     
     static Odometry* Instance();
-    // static void FPS(void* params);
-    // static void rotFPS(void* params);
+    static void FPS(void* params);
     // static void oldmoveTo(void* params);
-    // static void moveTo(void* params);
-    // static void tmoveTo(void* params);
-    // void setTarget(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
-    // void setTargetNow(double setx, double sety, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
-    // void setTargetTurn(double setTurn, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2);
-    // void setTargetPoint(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
-    // void waitUntilStop();
-    // double toRadians(double degrees);
-    // double toDegrees(double radians);
-    // double turnToHorizontalMovement(double deltaRotation);
-
-    void setTarget(double setTarget, double setTurn, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 30.0, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     static void moveTo(void* params);
+    // static void tmoveTo(void* params);
+    void setTarget(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
+    void setTarget(double setTurn, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
+    void setTargetNow(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
+    void setTargetNow(double setTurn, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void waitUntilStop();
+    double toRadians(double degrees);
+    double toDegrees(double radians);
+    double turnToHorizontalMovement(double deltaRotation);
 };

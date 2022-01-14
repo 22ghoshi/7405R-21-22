@@ -1,37 +1,26 @@
 #include "includes.hpp"
 
 namespace robotFuncs {
-    mLiftStates mLiftState = mLiftStates::low;
-    bool mLiftRunning = true;
-    bool pLiftState = false;
-    bool conveyorState = false;
-    int conveyorDirection = 1;
-    bool clampHold = true;
+    liftStates liftState = liftStates::low;
+    bool liftRunning = true;
+    // bool conveyorState = false;
+    // int conveyorDirection = 1;
     double manualLiftHoldVal = 0;
     int manualn = 0;
+    bool frontClampState = false;
+    bool backClampState = false;
+    bool tilterState = false;
     
     void drive(void* params) {
         while (true) {
-            // int power = (int)(127.0 * std::pow((double)lefty / 127, (double)13 / 9));
-            // int strafe = (int)(127.0 * std::pow((double)leftx / 127, (double)13 / 9));
-            // int turn = (int)(127.0 * std::pow((double)rightx / 127, (double)13 / 9));
-            // if (lefty < 0) {
-            // 	power = -1 * ((int) std::round(127.0 * std::pow((double) (-lefty) / 127, (double) 13 / 9)));
-            // }
-            // if (leftx < 0) {
-            // 	strafe = -1 * (int) std::round(127.0 * std::pow((double) (-leftx) / 127, (double) 13 / 9));
-            // }
-            // if(rightx < 0) {
-            // 	turn = -1 * ((int) std::round(127.0 * std::pow((double) (-rightx) / 127, (double) 13 / 9)));
-            // }
             int leftx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_X);
             int lefty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
             int rightx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
             int righty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-            // int power = lefty > 0 ? ((int)(127.0 * std::pow((double)lefty / 127, (double)13 / 9))) : -1 * ((int)(127.0 * std::pow((double)(-lefty) / 127, (double)13 / 9)));
-            // int turn = rightx > 0 ? ((int)(127.0 * std::pow((double)rightx / 127, (double)13 / 9))) : -1 * ((int)(127.0 * std::pow((double)(-rightx) / 127, (double)13 / 9)));
-            // sRobot->arcade(power, turn);
-            sRobot->arcade(lefty, rightx);
+            int power = lefty >= 0 ? ((int)(127.0 * std::pow((double)lefty / 127.0, 13.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-lefty) / 127.0, 13.0 / 9.0)));
+            int turn = rightx >= 0 ? ((int)(127.0 * std::pow((double)rightx / 127.0, 13.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-rightx) / 127.0, 13.0 / 9.0)));
+            sRobot->arcade(power, turn);
+            // sRobot->arcade(lefty, rightx);
             pros::delay(20);
         }
     }
@@ -53,7 +42,7 @@ namespace robotFuncs {
     //     Thread::resumeTask("drive");
     // }
 
-    void mLiftPID(void* params) {
+    void liftPID(void* params) {
         double kP = 0.2;
         double kI = 0.0001;
         double kD = 0.03;
@@ -63,7 +52,7 @@ namespace robotFuncs {
         int n = 0;
 
         while(true) {
-            err = (double)mLiftState - sRobot->getPotentiometer("mLift")->get_value();
+            err = (double)liftState - sRobot->getPotentiometer("Lift")->get_value();
 
             n += 1;
             if (n == 1) {
@@ -77,53 +66,54 @@ namespace robotFuncs {
 
                 double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                 
-                *(sRobot->getMotorGroup("mLift")) = liftSpeed;
+                *(sRobot->getMotor("Lift")) = liftSpeed;
             }
             else {
                 n = 0;
                 I = 0;
-                sRobot->getMotorGroup("mLift")->stop(brakeType::hold);
+                *(sRobot->getMotor("Lift")) = 0;
+                sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
             pros::delay(20);
         }
     }
 
-    void move_mLift() {
-        if (!mLiftRunning) {
+    void moveLift() {
+        if (!liftRunning) {
             Thread::resumeTask("lift");
-            mLiftRunning = true;
+            liftRunning = true;
         }
         if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
-            mLiftState = mLiftStates::down;
+            liftState = liftStates::down;
         } 
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
-            mLiftState = mLiftStates::low;
+            liftState = liftStates::low;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
-            mLiftState = mLiftStates::mid;
+            liftState = liftStates::mid;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_A)) {
-            mLiftState = mLiftStates::high;
+            liftState = liftStates::high;
         }
     }
 
-    void manualmove_mLift() {
-        if (mLiftRunning) {
+    void manualmoveLift() {
+        if (liftRunning) {
             Thread::pauseTask("lift");
-            mLiftRunning = false;
+            liftRunning = false;
         }
-        if (!mLiftRunning) { 
+        if (!liftRunning) { 
             manualn = 0;
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                *(sRobot->getMotorGroup("mLift")) = 127;
+                *(sRobot->getMotor("Lift")) = 127;
             }
             else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                *(sRobot->getMotorGroup("mLift")) = -127;
+                *(sRobot->getMotor("Lift")) = -127;
             }
         }
     }
 
-    void manualhold_mLift() {
+    void manualholdLift() {
         double kP = 0.2;
         double kI = 0.0001;
         double kD = 0.03;
@@ -131,7 +121,7 @@ namespace robotFuncs {
         double err, prevErr;
         int n = 0;
 
-        if (!mLiftRunning) {
+        if (!liftRunning) {
             if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2)) {
                 // manualn++;
                 // if (manualn == 1) {
@@ -165,94 +155,70 @@ namespace robotFuncs {
         }
     }
 
-    void toggle_pLift() {
-        pLiftState = 1 - pLiftState;
-        sRobot->getPiston("Right_pLift")->set_value(pLiftState);
-        sRobot->getPiston("Left_pLift")->set_value(pLiftState);
+    // void toggle_pLift() {
+    //     pLiftState = 1 - pLiftState;
+    //     sRobot->getPiston("Right_pLift")->set_value(pLiftState);
+    //     sRobot->getPiston("Left_pLift")->set_value(pLiftState);
+    // }
+
+    // void toggleConveyor() {
+    //     if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
+    //         if (conveyorDirection == 1) {
+    //             conveyorState = 1 - conveyorState;
+    //         }
+    //         else {
+    //             conveyorDirection = 1;
+    //             conveyorState = true;
+    //         }
+    //     }
+    //     else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+    //         if (conveyorDirection == -1) {
+    //             conveyorState = 1 - conveyorState;
+    //         }
+    //         else {
+    //             conveyorDirection = -1;
+    //             conveyorState = true;
+    //         }
+    //     }
+
+    //     if (conveyorState) {
+    //         *(sRobot->getMotor("Conveyor")) = 127 * conveyorDirection;
+    //     }
+    //     else {
+    //         *(sRobot->getMotor("Conveyor")) = 0;
+    //     }
+    // }
+
+    void toggleFrontClamp() {
+        frontClampState = 1 - frontClampState;
+        sRobot->getPiston("FrontClamp")->set_value(frontClampState);
     }
 
-    void toggleConveyor() {
-        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
-            if (conveyorDirection == 1) {
-                conveyorState = 1 - conveyorState;
-            }
-            else {
-                conveyorDirection = 1;
-                conveyorState = true;
-            }
-        }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-            if (conveyorDirection == -1) {
-                conveyorState = 1 - conveyorState;
-            }
-            else {
-                conveyorDirection = -1;
-                conveyorState = true;
-            }
-        }
-
-        if (conveyorState) {
-            *(sRobot->getMotor("Conveyor")) = 127 * conveyorDirection;
-        }
-        else {
-            *(sRobot->getMotor("Conveyor")) = 0;
-        }
+    void toggleBackClamp() {
+        backClampState = 1 - backClampState;
+        sRobot->getPiston("BackClamp")->set_value(backClampState);
     }
 
-    void clamp() {
-        clampHold = false;
-        if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            *(sRobot->getMotor("Clamp")) = 127;
-        }
-        else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            *(sRobot->getMotor("Clamp")) = -127;
-        }
-    }
-
-    void holdClamp() {
-        // *(sRobot->getMotor("Clamp")) = 0;
-        // sRobot->getMotor("Clamp")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-        
-        const double kP = 0.2;
-        if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            if (!clampHold) {
-                sRobot->getMotor("Clamp")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-                sRobot->getMotor("Clamp")->move_velocity(0);
-                sRobot->getMotor("Clamp")->tare_position();
-                clampHold = true;
-            }
-            else {
-                double err = -1.0 * sRobot->getMotor("Clamp")->get_position();
-                *(sRobot->getMotor("Clamp")) = kP * err;
-            }
-        }
-    }
-
-    void resetRotations() {
-        sRobot->getRotation("Left")->reset_position();
-        sRobot->getRotation("Right")->reset_position();
+    void toggleTilter() {
+        tilterState = 1 - tilterState;
+        sRobot->getPiston("Tilter")->set_value(tilterState);
     }
 
     void auton_clamp(int time) {
-        *(sRobot->getMotor("Clamp")) = 127;
-        pros::delay(time);
-        *(sRobot->getMotor("Clamp")) = 0;
-        sRobot->getMotor("Clamp")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+        
     }
 
     void auton_declamp(int time) {
-        *(sRobot->getMotor("Clamp")) = -127;
-        pros::delay(time);
-        *(sRobot->getMotor("Clamp")) = 0;
+        
     }
 
-    void auton_mLift(mLiftStates liftState) {
-        mLiftState = liftState;
+    void autonLift(liftStates setLiftState) {
+        liftState = setLiftState;
     }
 
-    void auton_conveyor(int time) {
-        *(sRobot->getMotor("Conveyor")) = 127;
-        pros::delay(time);
-        *(sRobot->getMotor("Conveyor")) = 0;
-    }
+    // void auton_conveyor(int time) {
+    //     *(sRobot->getMotor("Conveyor")) = 127;
+    //     pros::delay(time);
+    //     *(sRobot->getMotor("Conveyor")) = 0;
+    // }
 }
