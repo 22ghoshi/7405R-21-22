@@ -16,14 +16,14 @@ Robot::Robot() {
 	// motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 20, true);
 	motors["Lift"] = std::make_shared<Motor>("Lift", motorGearset::GS100, 2, true);
 	
-	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 1);
-	pistons["BackClamp"] = std:: make_unique<Piston>("BackClamp", 3);
-	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 4);
+	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 6);
+	pistons["BackClamp"] = std:: make_unique<Piston>("BackClamp", 7);
+	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 8);
 	
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 9);
-	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, std::make_pair(17, 1));
-	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, std::make_pair(17, 3), true);
-	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, std::make_pair(17, 4));
+	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3);
+	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 1, true);
+	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 5);
 
 	getInertial("Inertial")->reset();
 	pros::delay(3000);

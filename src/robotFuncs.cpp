@@ -149,8 +149,8 @@ namespace robotFuncs {
                 //     I = 0;
                 //     sRobot->getMotorGroup("mLift")->stop(brakeType::hold);
                 // }
-                *(sRobot->getMotorGroup("mLift")) = 0;
-                sRobot->getMotorGroup("mLift")->stop(brakeType::hold);
+                *(sRobot->getMotor("Lift")) = 0;
+                sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
         }
     }

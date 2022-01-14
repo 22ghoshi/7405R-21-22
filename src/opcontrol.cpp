@@ -19,7 +19,7 @@ void opcontrol() {
 	}
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
-	// Thread::startTask("lift", robotFuncs::liftPID);
+	//Thread::startTask("lift", robotFuncs::liftPID);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::moveLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_Y, robotFuncs::moveLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::moveLift);
