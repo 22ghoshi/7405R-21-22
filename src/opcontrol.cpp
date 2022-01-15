@@ -19,7 +19,7 @@ void opcontrol() {
 	}
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
-	//Thread::startTask("lift", robotFuncs::liftPID);
+	Thread::startTask("lift", robotFuncs::liftPID);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::moveLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_Y, robotFuncs::moveLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::moveLift);
@@ -35,24 +35,14 @@ void opcontrol() {
 	while (true) {
 		pros::lcd::set_text(1, "Right: " + std::to_string(sRobot->getEncoder("Right")->get_value()));
 		pros::lcd::set_text(2, "Left: " + std::to_string(sRobot->getEncoder("Left")->get_value()));
-		pros::lcd::set_text(3, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
-		// pros::lcd::set_text(3, "Avg: " + std::to_string((sRobot->getRotation("Left")->get_position() + sRobot->getRotation("Right")->get_position()) / 200.0));
-		pros::lcd::set_text(4, "Inertial: " + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
+		// pros::lcd::set_text(5, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
+		// pros::lcd::set_text(3, "Avg: " + std::to_string((sRobot->getEncoder("Left")->get_value() + sRobot->getEncoder("Right")->get_value()) / 200.0));
+		// pros::lcd::set_text(4, "Inertial: " + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
 
-		// pros::lcd::set_text(1, "backleft: " + std::to_string(sRobot->getMotor("BackLeft")->get_temperature()));
-		// pros::lcd::set_text(2, "backright: " + std::to_string(sRobot->getMotor("BackRight")->get_temperature()));
-		// pros::lcd::set_text(3, "frontleft: " + std::to_string(sRobot->getMotor("FrontLeft")->get_temperature()));
-		// pros::lcd::set_text(4, "frontright: " + std::to_string(sRobot->getMotor("FrontRight")->get_temperature()));
 		// printf("\nbackleft: %d", (int)sRobot->getMotor("BackLeft")->get_temperature());
 		// printf("\nbackright: %d", (int)sRobot->getMotor("BackRight")->get_temperature());
 		// printf("\nfrontleft: %d", (int)sRobot->getMotor("FrontLeft")->get_temperature());
 		// printf("\nfrontright: %d", (int)sRobot->getMotor("FrontRight")->get_temperature());
-		
-
-		
-		// pros::lcd::set_text(5, "turnErr: " + std::to_string(sOdom->turnErr));
-		// pros::lcd::set_text(5, "Lift: " + std::to_string(sRobot->getPotentiometer("mLift")->get_value()));
-		// pros::lcd::set_text(5, "clamp: " + std::to_string(sRobot->getMotor("Clamp")->get_position()));
 
 		sController->act();
 		pros::delay(20);

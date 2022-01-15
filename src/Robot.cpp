@@ -5,7 +5,7 @@ Robot* Robot::pInstance = NULL;
 Robot::Robot() {
 	//dead ports 4 5
 	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 8, true);
-	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 6);
+	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 4);
 	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 10);
 	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 16, true);
 	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS200, 20, true);
@@ -22,7 +22,7 @@ Robot::Robot() {
 	
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 9);
 	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3);
-	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 1, true);
+	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 1);
 	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 5);
 
 	getInertial("Inertial")->reset();

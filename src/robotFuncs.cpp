@@ -1,7 +1,7 @@
 #include "includes.hpp"
 
 namespace robotFuncs {
-    liftStates liftState = liftStates::low;
+    liftStates liftState = liftStates::down;
     bool liftRunning = true;
     // bool conveyorState = false;
     // int conveyorDirection = 1;
@@ -43,9 +43,9 @@ namespace robotFuncs {
     // }
 
     void liftPID(void* params) {
-        double kP = 0.2;
-        double kI = 0.0001;
-        double kD = 0.03;
+        double kP = 0.35;
+        double kI = 0.001;
+        double kD = 0.05;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 
@@ -114,7 +114,7 @@ namespace robotFuncs {
     }
 
     void manualholdLift() {
-        double kP = 0.2;
+        double kP = 0.3;
         double kI = 0.0001;
         double kD = 0.03;
         double P = 0, I = 0, D = 0;
@@ -122,44 +122,39 @@ namespace robotFuncs {
         int n = 0;
 
         if (!liftRunning) {
-            if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                // manualn++;
-                // if (manualn == 1) {
-                //     manualLiftHoldVal = sRobot->getPotentiometer("mLift")->get_value();
-                // }
+            manualn++;
+            if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2) && manualn >= 25) {
+                if (manualn == 25) {
+                    manualLiftHoldVal = sRobot->getPotentiometer("Lift")->get_value();
+                }
 
-                // err = manualLiftHoldVal - sRobot->getPotentiometer("mLift")->get_value();
+                err = manualLiftHoldVal - sRobot->getPotentiometer("Lift")->get_value();
 
-                // n += 1;
-                // if (n == 1) {
-                //     prevErr = err;
-                // }
+                n += 1;
+                if (n == 1) {
+                    prevErr = err;
+                }
                 
-                // if (fabs(err) > 10) {
-                //     P = err;
-                //     I += err;
-                //     D = err - prevErr;
+                if (fabs(err) > 10) {
+                    P = err;
+                    I += err;
+                    D = err - prevErr;
 
-                //     double liftSpeed = (kP * P) + (kI * I) + (kD * D);
+                    double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                     
-                //     *(sRobot->getMotorGroup("mLift")) = liftSpeed;
-                // }
-                // else {
-                //     n = 0;
-                //     I = 0;
-                //     sRobot->getMotorGroup("mLift")->stop(brakeType::hold);
-                // }
-                *(sRobot->getMotor("Lift")) = 0;
-                sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                    *(sRobot->getMotor("Lift")) = liftSpeed;
+                }
+                else {
+                    n = 0;
+                    I = 0;
+                    *(sRobot->getMotor("Lift")) = 0;
+                     sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                }
+                // *(sRobot->getMotor("Lift")) = 0;
+                // sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
         }
     }
-
-    // void toggle_pLift() {
-    //     pLiftState = 1 - pLiftState;
-    //     sRobot->getPiston("Right_pLift")->set_value(pLiftState);
-    //     sRobot->getPiston("Left_pLift")->set_value(pLiftState);
-    // }
 
     // void toggleConveyor() {
     //     if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
