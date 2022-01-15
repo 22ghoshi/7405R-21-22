@@ -155,6 +155,12 @@ void Odometry::moveTo(void* params) {
         movePoint = sOdom->targetPos - sOdom->currentPos;
         
         sOdom->moveDist = sOdom->currentPos.distanceTo(sOdom->targetPos);
+
+        if (sOdom->moveDist > 400.0) {
+            sOdom->targetPos.h = sOdom->currentPos.angleTo(sOdom->targetPos);
+
+        }
+
         sOdom->turnErr = sOdom->targetPos.h.load() - sOdom->currentPos.h.load();
 
         direction = cos(sOdom->toRadians(sOdom->turnErr)) > 0 ? 1 : -1;

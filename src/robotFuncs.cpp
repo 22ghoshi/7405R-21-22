@@ -29,18 +29,18 @@ namespace robotFuncs {
         //
     }
 
-    // void testmove() {
-    //     Thread::pauseTask("drive");
-    //     Thread::startTask("move", Odometry::moveTo);
-    //     pros::delay(100);
-    //     sOdom->setTarget(300, -300, -45, {0.3, 0.001, 0.13}, 20, {3.0, 0.001, 0.5}, 5.0);
-    //     // sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
-    //     // sOdom->setTarget(0, 0, 0);
-    //     sOdom->waitUntilStop();
-    //     sRobot->stopDrive();
-    //     Thread::killTask("move");
-    //     Thread::resumeTask("drive");
-    // }
+    void testmove() {
+        Thread::pauseTask("drive");
+        Thread::startTask("move", Odometry::moveTo);
+        pros::delay(100);
+        sOdom->setTarget(0, 1720, {0.27, 0.00005, 0.5}, 20, {2.0, 0.001, 0.4}, 5.0);
+        // sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
+        // sOdom->setTarget(0, 0, 0);
+        sOdom->waitUntilStop();
+        sRobot->stopDrive();
+        Thread::killTask("move");
+        Thread::resumeTask("drive");
+    }
 
     void liftPID(void* params) {
         double kP = 0.35;
@@ -122,9 +122,10 @@ namespace robotFuncs {
         int n = 0;
 
         if (!liftRunning) {
-            manualn++;
-            if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2) && manualn >= 25) {
-                if (manualn == 25) {
+            if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                
+                manualn++;
+                if (manualn == 40) {
                     manualLiftHoldVal = sRobot->getPotentiometer("Lift")->get_value();
                 }
 
@@ -135,7 +136,7 @@ namespace robotFuncs {
                     prevErr = err;
                 }
                 
-                if (fabs(err) > 10) {
+                if (fabs(err) > 10  && manualn >= 40) {
                     P = err;
                     I += err;
                     D = err - prevErr;
@@ -147,7 +148,7 @@ namespace robotFuncs {
                 else {
                     n = 0;
                     I = 0;
-                    *(sRobot->getMotor("Lift")) = 0;
+                    sRobot->getMotor("Lift")->move_velocity(0);
                      sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                 }
                 // *(sRobot->getMotor("Lift")) = 0;
