@@ -64,13 +64,12 @@ namespace robotFuncs {
 
                 double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                 
-                *(sRobot->getMotor("Lift")) = liftSpeed;
+                *(sRobot->getMotorGroup("Lift")) = liftSpeed;
             }
             else {
                 n = 0;
                 I = 0;
-                *(sRobot->getMotor("Lift")) = 0;
-                sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                sRobot->getMotorGroup("Lift")->stop(brakeType::hold);
             }
             pros::delay(20);
         }
@@ -103,10 +102,10 @@ namespace robotFuncs {
         if (!liftRunning) { 
             manualn = 0;
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
-                *(sRobot->getMotor("Lift")) = 127;
+                *(sRobot->getMotorGroup("Lift")) = 127;
             }
             else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
-                *(sRobot->getMotor("Lift")) = -127;
+                *(sRobot->getMotorGroup("Lift")) = -127;
             }
         }
     }
@@ -140,13 +139,12 @@ namespace robotFuncs {
 
                     double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                     
-                    *(sRobot->getMotor("Lift")) = liftSpeed;
+                    *(sRobot->getMotorGroup("Lift")) = liftSpeed;
                 }
                 else {
                     n = 0;
                     I = 0;
-                    sRobot->getMotor("Lift")->move_velocity(0);
-                    sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                    sRobot->getMotorGroup("Lift")->stop(brakeType::hold);
                 }
                 // *(sRobot->getMotor("Lift")) = 0;
                 // sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
