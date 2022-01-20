@@ -20,23 +20,23 @@ void opcontrol() {
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
 	Thread::startTask("lift", robotFuncs::liftPID);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::moveLift);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_Y, robotFuncs::moveLift);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::moveLift);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_A, robotFuncs::moveLift);
-	sController->registerButton(pros::E_CONTROLLER_DIGITAL_L1, robotFuncs::manualmoveLift, robotFuncs::manualholdLift);
-	sController->registerButton(pros::E_CONTROLLER_DIGITAL_L2, robotFuncs::manualmoveLift, robotFuncs::manualholdLift);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::toggleFrontClamp);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_LEFT, robotFuncs::toggleBackClamp);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::toggleTilter);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::moveLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_LEFT, robotFuncs::moveLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::moveLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::moveLift);
+	sController->registerButton(pros::E_CONTROLLER_DIGITAL_R1, robotFuncs::manualmoveLift, robotFuncs::manualholdLift);
+	sController->registerButton(pros::E_CONTROLLER_DIGITAL_R2, robotFuncs::manualmoveLift, robotFuncs::manualholdLift);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L1, robotFuncs::toggleFrontClamp);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L2, robotFuncs::toggleBackClamp);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::toggleTilter);
 	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::toggleConveyor);
 	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::toggleConveyor);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::testmove);
+	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::testmove);
 
 	while (true) {
-		// pros::lcd::set_text(1, "Right: " + std::to_string(sRobot->getEncoder("Right")->get_value()));
-		// pros::lcd::set_text(2, "Left: " + std::to_string(sRobot->getEncoder("Left")->get_value()));
-		// pros::lcd::set_text(5, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
+		pros::lcd::set_text(1, "Right: " + std::to_string(sRobot->getEncoder("Right")->get_value()));
+		pros::lcd::set_text(2, "Left: " + std::to_string(sRobot->getEncoder("Left")->get_value()));
+		pros::lcd::set_text(4, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
 		// pros::lcd::set_text(3, "Avg: " + std::to_string((sRobot->getEncoder("Left")->get_value() + sRobot->getEncoder("Right")->get_value()) / 200.0));
 		// pros::lcd::set_text(4, "Inertial: " + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
 

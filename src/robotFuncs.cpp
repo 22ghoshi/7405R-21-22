@@ -17,8 +17,8 @@ namespace robotFuncs {
             int lefty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
             int rightx = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
             int righty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-            int power = lefty >= 0 ? ((int)(127.0 * std::pow((double)lefty / 127.0, 13.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-lefty) / 127.0, 13.0 / 9.0)));
-            int turn = rightx >= 0 ? ((int)(127.0 * std::pow((double)rightx / 127.0, 13.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-rightx) / 127.0, 13.0 / 9.0)));
+            int power = lefty >= 0 ? ((int)(127.0 * std::pow((double)lefty / 127.0, 15.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-lefty) / 127.0, 15.0 / 9.0)));
+            int turn = rightx >= 0 ? ((int)(127.0 * std::pow((double)rightx / 127.0, 21.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-rightx) / 127.0, 21.0 / 9.0)));
             sRobot->arcade(power, turn);
             // sRobot->arcade(lefty, rightx);
             pros::delay(20);
@@ -34,8 +34,6 @@ namespace robotFuncs {
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
         sOdom->setTarget(0, 1720, {0.27, 0.00005, 0.5}, 20, {2.0, 0.001, 0.4}, 5.0);
-        // sOdom->setTargetTurn(90, {1.5, 0.0, 0.1}, 1.0);
-        // sOdom->setTarget(0, 0, 0);
         sOdom->waitUntilStop();
         sRobot->stopDrive();
         Thread::killTask("move");
@@ -43,9 +41,9 @@ namespace robotFuncs {
     }
 
     void liftPID(void* params) {
-        double kP = 0.35;
-        double kI = 0.001;
-        double kD = 0.05;
+        double kP = 0.6;
+        double kI = 0.01;
+        double kD = 0.1;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 
@@ -83,16 +81,16 @@ namespace robotFuncs {
             Thread::resumeTask("lift");
             liftRunning = true;
         }
-        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
+        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_DOWN)) {
             liftState = liftStates::down;
         } 
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             liftState = liftStates::low;
         }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
             liftState = liftStates::mid;
         }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_A)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             liftState = liftStates::high;
         }
     }
@@ -104,10 +102,10 @@ namespace robotFuncs {
         }
         if (!liftRunning) { 
             manualn = 0;
-            if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 *(sRobot->getMotor("Lift")) = 127;
             }
-            else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
                 *(sRobot->getMotor("Lift")) = -127;
             }
         }
@@ -122,8 +120,7 @@ namespace robotFuncs {
         int n = 0;
 
         if (!liftRunning) {
-            if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_L1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                
+            if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
                 manualn++;
                 if (manualn == 40) {
                     manualLiftHoldVal = sRobot->getPotentiometer("Lift")->get_value();
@@ -149,7 +146,7 @@ namespace robotFuncs {
                     n = 0;
                     I = 0;
                     sRobot->getMotor("Lift")->move_velocity(0);
-                     sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                    sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                 }
                 // *(sRobot->getMotor("Lift")) = 0;
                 // sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
