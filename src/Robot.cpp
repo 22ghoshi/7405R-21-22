@@ -15,7 +15,7 @@ Robot::Robot() {
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "MidLeft", "MidRight", "FrontLeft", "FrontRight"});
 	// motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 20, true);
 	motors["LeftLift"] = std::make_shared<Motor>("LeftLift", motorGearset::GS100, 8, true);
-	motors["RightLift"] = std::make_shared<Motor>("RightLift", motorGearset::GS100, 16, true);
+	motors["RightLift"] = std::make_shared<Motor>("RightLift", motorGearset::GS100, 16);
 	makeMotorGroup("Lift", {"LeftLift", "RightLift"});
 	
 	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 6);
@@ -23,7 +23,7 @@ Robot::Robot() {
 	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 8);
 	
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 17);
-	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3);
+	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3, true);
 	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 1);
 	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 5);
 

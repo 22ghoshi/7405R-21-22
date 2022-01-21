@@ -8,7 +8,7 @@ namespace robotFuncs {
     double manualLiftHoldVal = 0;
     int manualn = 0;
     bool frontClampState = false;
-    bool backClampState = false;
+    bool backClampState =  false;
     bool tilterState = false;
     
     void drive(void* params) {
@@ -80,16 +80,16 @@ namespace robotFuncs {
             Thread::resumeTask("lift");
             liftRunning = true;
         }
-        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
             liftState = liftStates::down;
         } 
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
             liftState = liftStates::low;
         }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
             liftState = liftStates::mid;
         }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_A)) {
             liftState = liftStates::high;
         }
     }
