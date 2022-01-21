@@ -33,7 +33,19 @@ namespace robotFuncs {
         Thread::pauseTask("drive");
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
-        sOdom->setTarget(0, 1720, {0.27, 0.00005, 0.5}, 20, {2.0, 0.001, 0.4}, 5.0);
+        sOdom->setTarget(0, 1800, {0.2, 0.0001, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
+
+        // while (sOdom->currentPos.y < 1700) {
+        //     pros::delay(2);
+        // }
+        // Thread::pauseTask("move");
+        sOdom->waitUntilStop();
+        toggleFrontClamp();
+
+        sOdom->setTarget(0, 900, {0.2, 0.0001, 0.5}, 40, {5.0, 0.01, 1.0}, 7.0);
+        autonLift(liftStates::low);
+        sOdom->setTarget(-90, {2.5, 0.01, 0.5}, 2.0);
+        
         sOdom->waitUntilStop();
         sRobot->stopDrive();
         Thread::killTask("move");
@@ -41,9 +53,9 @@ namespace robotFuncs {
     }
 
     void liftPID(void* params) {
-        double kP = 0.6;
-        double kI = 0.01;
-        double kD = 0.1;
+        double kP = 0.45;
+        double kI = 0.001;
+        double kD = 0.35;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 

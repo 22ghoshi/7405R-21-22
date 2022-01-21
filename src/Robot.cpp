@@ -3,13 +3,13 @@
 Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
-	//dead ports 4 5
+	//dead ports 4 5 10
 	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 20, true);
 	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 1);
 	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 3);
 	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 7, true);
 	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS200, 18, true);
-	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 10);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 9);
 	makeMotorGroup("LeftDrive", {"BackLeft", "MidLeft", "FrontLeft"});
 	makeMotorGroup("RightDrive", {"BackRight", "MidRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "MidLeft", "MidRight", "FrontLeft", "FrontRight"});
