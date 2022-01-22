@@ -23,7 +23,7 @@ Robot::Robot() {
 	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 8);
 	
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 17);
-	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3, true);
+	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3);
 	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 1);
 	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 5);
 

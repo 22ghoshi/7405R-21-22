@@ -92,7 +92,31 @@ void leftneutral() {
 }
 
 void test() {
-	// robotFuncs::auton_mLift(mLiftStates::low);
+	sOdom->setTarget(0, 1800, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
+    robotFuncs::toggleFrontClamp();
+    robotFuncs::toggleBackClamp();
+    sOdom->waitUntilStop();
+    robotFuncs::toggleFrontClamp();
+    
+    sOdom->setTarget(0, 1130, {0.27, 0.0001, 0.3}, 30, {5.0, 0.01, 1.0}, 7.0);
+    robotFuncs::autonLift(liftStates::low);
+
+    sOdom->setTarget(-68.0, {1.5, 0.001, 1.5}, 2.0);
+    sOdom->setTarget(697, 850, {0.32, 0.0001, 0.2}, 30, {5.0, 0.03, 1.0}, 5.0);
+    sOdom->waitUntilStop();
+    robotFuncs::toggleBackClamp();
+    pros::delay(250);
+
+    sOdom->setTarget(472, 933, {0.4, 0.0001, 0.3}, 50, {5.0, 0.01, 1.0}, 5.0);
+    sOdom->waitUntilStop();
+    robotFuncs::toggleTilter();
+    sOdom->setTarget(0, {1.8, 0.001, 1.5}, 2.0);
+    sOdom->setTarget(426, 4000, {0.15, 0.00001, 0.3}, 100, {3.0, 0.01, 1.0}, 5.0);
+	sOdom->waitUntilStop();
+	// robotFuncs::toggleFrontClamp();
+
+	// sOdom->setTarget(554, 2284, {0.3, 0.0001, 0.2}, 30, {2.0, 0.01, 0.5}, 5.0);
+	// sOdom->setTarget(90, {1.5, 0.001, 1.5}, 2.0);
 }
 
 /**

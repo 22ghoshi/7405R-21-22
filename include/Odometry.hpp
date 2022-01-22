@@ -61,8 +61,6 @@ class Odometry {
     private:
     Odometry();
     static Odometry* pInstance;
-    Point currentPos;
-    Point targetPos;
     double mkP;
     double mkI;
     double mkD;
@@ -73,7 +71,11 @@ class Odometry {
     double tacc;
     int n;
 
+    bool turning;
+
     public:
+    Point currentPos;
+    Point targetPos;
     double moveDist;
     double turnErr;
     int moves;

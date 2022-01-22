@@ -21,6 +21,8 @@ Odometry::Odometry() {
     tacc = 4;
     moves = 0;
     n = 0;
+
+    turning = false;
 }
 
 Odometry* Odometry::Instance() {
@@ -164,7 +166,7 @@ void Odometry::moveTo(void* params) {
         sOdom->turnErr = sOdom->targetPos.h.load() - sOdom->currentPos.h.load();
 
         direction = cos(sOdom->toRadians(sOdom->turnErr)) > 0 ? 1 : -1;
-        if(direction < 0) {
+        if(direction < 0 && !sOdom->turning) {
             sOdom->turnErr = sOdom->turnErr > 0 ? sOdom->turnErr - 180 : sOdom->turnErr + 180;
         }
 
@@ -185,7 +187,7 @@ void Odometry::moveTo(void* params) {
             double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
             
             sRobot->arcade(0, turnSpeed);
-            if (sOdom->n % 2 == 0) { printf("\ncurrentPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = turnbefore, turnErr = %d, turnSpeed = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, sOdom->moves, (int)sOdom->moveDist, (int)sOdom->turnErr, (int)turnSpeed); }
+            if (sOdom->n % 2 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = turnbefore, turnErr = %d, turnSpeed = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)sOdom->turnErr, (int)turnSpeed); }
         }
         else if (sOdom->moveDist > sOdom->macc) {
             tP = sOdom->turnErr;
@@ -213,7 +215,7 @@ void Odometry::moveTo(void* params) {
             }
             
             sRobot->arcade(moveSpeed * direction, turnSpeed);
-            if (sOdom->n % 2 == 0) { printf("\ncurrentPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, sOdom->moves, (int)sOdom->moveDist, (int)(moveSpeed * direction), (int)sOdom->turnErr, (int)turnSpeed); }
+            if (sOdom->n % 2 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)(moveSpeed * direction), (int)sOdom->turnErr, (int)turnSpeed); }
         }
         else {
             sRobot->stopDrive();
@@ -298,6 +300,7 @@ void Odometry::setTarget(double setx, double sety, std::initializer_list<double>
     waitUntilStop();
     moves++;
     n = 0;
+    turning = false;
     targetPos.x = setx;
     targetPos.y = sety;
     targetPos.h = currentPos.angleTo(targetPos);
@@ -315,6 +318,7 @@ void Odometry::setTarget(double setTurn, std::initializer_list<double> tPID, dou
     waitUntilStop();
     moves++;
     n = 0;
+    turning = true;
     targetPos.x = currentPos.x.load();
     targetPos.y = currentPos.y.load();
     targetPos.h = setTurn;
@@ -328,6 +332,7 @@ void Odometry::setTarget(double setTurn, std::initializer_list<double> tPID, dou
 void Odometry::setTargetNow(double setx, double sety, std::initializer_list<double> mPID, double setmacc, std::initializer_list<double> tPID, double settacc) {
     moves++;
     n = 0;
+    turning = false;
     targetPos.x = setx;
     targetPos.y = sety;
     targetPos.h = currentPos.angleTo(targetPos);
@@ -344,6 +349,7 @@ void Odometry::setTargetNow(double setx, double sety, std::initializer_list<doub
 void Odometry::setTargetNow(double setTurn, std::initializer_list<double> tPID, double settacc) {
     moves++;
     n = 0;
+    turning = true;
     targetPos.x = currentPos.x.load();
     targetPos.y = currentPos.y.load();
     targetPos.h = setTurn;

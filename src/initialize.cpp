@@ -2,7 +2,7 @@
 
 //vector of autons
 std::vector<std::string> autonNames{"left", "leftneutral", "middle", "right", "right wp", "test"};
-autonSelect autonselect = autonSelect::leftneutral;
+autonSelect autonselect = autonSelect::test;
 
 void on_center_button() {
 	
