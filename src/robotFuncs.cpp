@@ -33,15 +33,6 @@ namespace robotFuncs {
         Thread::pauseTask("drive");
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
-
-        sOdom->setTarget(0, 1860, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
-        toggleFrontClamp();
-        toggleBackClamp();
-        sOdom->waitUntilStop();
-        toggleFrontClamp();
-        
-        sOdom->setTarget(0, 700, {0.27, 0.0001, 0.3}, 30, {5.0, 0.01, 1.0}, 7.0);
-        autonLift(liftStates::low);
         
         sOdom->waitUntilStop();
         sRobot->stopDrive();

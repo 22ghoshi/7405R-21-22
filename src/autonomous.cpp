@@ -1,33 +1,24 @@
 #include "includes.hpp"
 
 void right() {
-	// //straight to neutral mogo
-	// sOdom->setTarget(1570, 0, {0.27, 0.000025, 0.3}, 20, {1.5, 0.00, 0.4}, 5.0);
-	// robotFuncs::auton_mLift(mLiftStates::low);
-	// robotFuncs::auton_declamp(1000);
-	// sOdom->waitUntilStop();
-	// robotFuncs::auton_clamp(700);
-	// robotFuncs::auton_mLift(mLiftStates::lowmid);
+	sOdom->setTarget(0, 1800, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
+    robotFuncs::toggleFrontClamp();
+    robotFuncs::toggleBackClamp();
+    sOdom->waitUntilStop();
+    robotFuncs::toggleFrontClamp();
+    
+    sOdom->setTarget(0, 1130, {0.27, 0.0001, 0.3}, 30, {5.0, 0.01, 1.0}, 7.0);
+    robotFuncs::autonLift(liftStates::low);
 
+    sOdom->setTarget(-68.0, {1.5, 0.001, 1.5}, 2.0);
+    sOdom->setTarget(697, 850, {0.32, 0.0001, 0.2}, 30, {5.0, 0.03, 1.0}, 5.0);
+    sOdom->waitUntilStop();
+    robotFuncs::toggleBackClamp();
+    pros::delay(250);
 
-	// //back up, turn, drop mogo, lower alliance lift
-	// sOdom->setTarget(-955, 0, {0.35, 0.0001, 0.27}, 20, {3.6, 0.02, 2.5}, 3.0);
-	// sOdom->setTarget(0, -90.0, {0.0, 0.0, 0.0}, 20, {1.9, 0.005, 1.4}, 1.0);
-	// sOdom->waitUntilStop();
-	// robotFuncs::toggle_pLift();
-	// robotFuncs::auton_declamp(350);
-	
-	// //move back and pick up alliance mogo
-	// sOdom->setTarget(-350, -90.0, {0.45, 0.001, 0.3}, 20.0, {2.5, 0.0, 0.4});
-	// sOdom->waitUntilStop();
-	// robotFuncs::toggle_pLift();
-	
-
-	// //bring out alliance mogo, score rings
-	// pros::delay(750);
-	// sOdom->setTarget(700.0, -90.0, {0.28, 0.0001, 0.25}, 50);
-	// sOdom->waitUntilStop();
-	// robotFuncs::auton_conveyor(2000);
+    sOdom->setTarget(472, 933, {0.4, 0.0001, 0.3}, 50, {5.0, 0.01, 1.0}, 5.0);
+    sOdom->waitUntilStop();
+    robotFuncs::toggleTilter();
 }
 
 void rightwp() {
@@ -58,26 +49,14 @@ void middle() {
 }
 
 void left() {
-	// //pick up alliance off platform
-	// robotFuncs::toggle_pLift();
-	// sOdom->setTarget(-275, 0, {0.45, 0.001, 0.3}, 10.0, {1.5, 0.0, 0.4}, 4.0);
-	// sOdom->waitUntilStop();
-	// robotFuncs::toggle_pLift();
-	// pros::delay(750);
-	// sOdom->setTarget(275, 0, {0.45, 0.001, 0.3}, 20.0, {1.5, 0.0, 0.4}, 4.0);
-	// sOdom->waitUntilStop();
-	// robotFuncs::auton_conveyor(2000);
-	// robotFuncs::auton_mLift(mLiftStates::lowmid);
-	// *(sRobot->getMotor("Conveyor")) = 127;
-	// pros::delay(1000);
-	// sOdom->setTarget(400, 0, {0.4, 0.001, 0.2});
-	// sOdom->setTarget(-400, 0, {0.4, 0.001, 0.2});
-	// pros::delay(1000);
-	// sOdom->setTarget(400, 0, {0.4, 0.001, 0.2});
-	// sOdom->setTarget(-400, 0, {0.4, 0.001, 0.2});
-	// pros::delay(1000);
-	// sOdom->setTarget(400, 0, {0.4, 0.001, 0.2});
-	// sOdom->setTarget(-400, 0, {0.4, 0.001, 0.2});
+	sOdom->setTarget(0, 1860, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
+    robotFuncs::toggleFrontClamp();
+    robotFuncs::toggleBackClamp();
+    sOdom->waitUntilStop();
+    robotFuncs::toggleFrontClamp();
+    
+    sOdom->setTarget(0, 700, {0.27, 0.0001, 0.3}, 30, {5.0, 0.01, 1.0}, 7.0);
+    robotFuncs::autonLift(liftStates::low);
 }
 
 void leftneutral() {
@@ -91,7 +70,7 @@ void leftneutral() {
 	// sOdom->setTarget(-1200, 0.0, {0.28, 0.0001, 0.25});
 }
 
-void test() {
+void skills() {
 	sOdom->setTarget(0, 1800, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
     robotFuncs::toggleFrontClamp();
     robotFuncs::toggleBackClamp();
@@ -117,6 +96,10 @@ void test() {
 
 	// sOdom->setTarget(554, 2284, {0.3, 0.0001, 0.2}, 30, {2.0, 0.01, 0.5}, 5.0);
 	// sOdom->setTarget(90, {1.5, 0.001, 1.5}, 2.0);
+}
+
+void test() {
+
 }
 
 /**
@@ -149,6 +132,9 @@ void autonomous() {
 			break;
 		case autonSelect::rightwp:
 			rightwp();
+			break;
+		case autonSelect::skills:
+			skills();
 			break;
 		case autonSelect::test:
 			test();
