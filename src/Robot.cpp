@@ -4,28 +4,26 @@ Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
 	//dead ports 4 5 10
-	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 20, true);
-	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 1);
-	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 3);
-	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 7, true);
+	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 19, true);
+	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 12);
+	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 16);
+	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 11, true);
 	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS200, 18, true);
-	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 9);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 13);
 	makeMotorGroup("LeftDrive", {"BackLeft", "MidLeft", "FrontLeft"});
 	makeMotorGroup("RightDrive", {"BackRight", "MidRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "MidLeft", "MidRight", "FrontLeft", "FrontRight"});
-	// motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS200, 20, true);
-	motors["LeftLift"] = std::make_shared<Motor>("LeftLift", motorGearset::GS100, 8, true);
-	motors["RightLift"] = std::make_shared<Motor>("RightLift", motorGearset::GS100, 16);
-	makeMotorGroup("Lift", {"LeftLift", "RightLift"});
+	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS600, 1);
+	motors["Lift"] = std::make_shared<Motor>("Lift", motorGearset::GS100, 17, true);
 	
-	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 6);
-	pistons["BackClamp"] = std:: make_unique<Piston>("BackClamp", 7);
-	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 8);
+	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 4);
+	pistons["BackClamp"] = std:: make_unique<Piston>("BackClamp", 3);
+	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 2);
 	
-	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 17);
-	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 3);
-	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 1);
-	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 5);
+	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 20);
+	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 5, true);
+	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 7, true);
+	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 1);
 
 	getInertial("Inertial")->reset();
 	pros::delay(3000);

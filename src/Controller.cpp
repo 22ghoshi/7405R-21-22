@@ -71,7 +71,3 @@ bool Controller::getDigital(pros::controller_digital_e_t button) {
 bool Controller::getDigitalNewPress(pros::controller_digital_e_t button) {
     return buttonNewPressStatus[button];
 }
-
-// void Controller::print(int line, int col) {
-//     master.print(line, col, text);
-// }

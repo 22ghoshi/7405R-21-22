@@ -1,6 +1,6 @@
 #pragma once
 
-enum class liftStates {down = 83, low = 350, lowmid = 1500, mid = 1452, high = 1950};
+enum class liftStates {down = 675, low = 1050, lowmid = 800, mid = 1980, high = 2035};
 
 namespace robotFuncs {
     void drive(void* params);
@@ -10,7 +10,7 @@ namespace robotFuncs {
     void moveLift();
     void manualmoveLift();
     void manualholdLift();
-    // void toggleConveyor();
+    void toggleConveyor();
     void toggleFrontClamp();
     void toggleBackClamp();
     void toggleTilter();
@@ -18,5 +18,7 @@ namespace robotFuncs {
     void auton_clamp(int time);
     void auton_declamp(int time);
     void autonLift(liftStates setLiftState);
-    // void auton_conveyor(int time);
+    void auton_conveyor(int time);
+
+    void controllerPrint(void* params);
 }

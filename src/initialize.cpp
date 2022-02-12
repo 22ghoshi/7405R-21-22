@@ -1,8 +1,8 @@
 #include "includes.hpp"
 
 //vector of autons
-std::vector<std::string> autonNames{"left", "leftneutral", "middle", "right", "right wp", "skills", "test"};
-autonSelect autonselect = autonSelect::right;
+std::vector<std::string> autonNames{"leftwp", "leftneutral", "middle", "right", "right wp", "skills", "test"};
+autonSelect autonselect = autonSelect::leftwp;
 
 void on_center_button() {
 	
@@ -48,6 +48,8 @@ void initialize() {
 
 	Odometry::Instance();
 	Thread::startTask("fps", Odometry::FPS);
+
+	// sController->master.clear();
 }
 
 /**

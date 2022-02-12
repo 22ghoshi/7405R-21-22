@@ -46,14 +46,14 @@ void Odometry::FPS(void* params) {
         deltaPoint.y = (verticalMovement * cos(sOdom->toRadians(heading)));
 
         sOdom->currentPos += deltaPoint;
-
-        pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
-		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
-        pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
         
         sRobot->getEncoder("Left")->reset();
         sRobot->getEncoder("Right")->reset();
         previousHeading = heading;
+
+        pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
+		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
+        pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
 
         pros::delay(20);
     }
@@ -160,7 +160,6 @@ void Odometry::moveTo(void* params) {
 
         if (sOdom->moveDist > 200.0) {
             sOdom->targetPos.h = sOdom->currentPos.angleTo(sOdom->targetPos);
-
         }
 
         sOdom->turnErr = sOdom->targetPos.h.load() - sOdom->currentPos.h.load();

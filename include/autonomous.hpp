@@ -1,6 +1,6 @@
 #pragma once
 
-void left();
+void leftwp();
 void leftneutral();
 void middle();
 void right();
