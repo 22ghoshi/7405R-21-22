@@ -42,9 +42,9 @@ namespace robotFuncs {
     }
 
     void liftPID(void* params) {
-        double kP = 0.6;
-        double kI = 0.00002;
-        double kD = 0.5;
+        double kP = 0.7;
+        double kI = 0.00000;
+        double kD = 0.05;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 
@@ -83,17 +83,17 @@ namespace robotFuncs {
             liftRunning = true;
         }
         if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
-            if (conveyorRunning) {
-                conveyorRunning = false;
-                *(sRobot->getMotor("Conveyor")) = 0;
-            }
+            // if (conveyorRunning) {
+            //     conveyorRunning = false;
+            //     *(sRobot->getMotor("Conveyor")) = 0;
+            // }
             liftState = liftStates::down;
         } 
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
-            if (conveyorRunning) {
-                conveyorRunning = false;
-                *(sRobot->getMotor("Conveyor")) = 0;
-            }
+            // if (conveyorRunning) {
+            //     conveyorRunning = false;
+            //     *(sRobot->getMotor("Conveyor")) = 0;
+            // }
             liftState = liftStates::low;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
@@ -112,18 +112,18 @@ namespace robotFuncs {
         if (!liftRunning) { 
             manualn = 0;
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
+                // if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
+                //     conveyorRunning = true;
+                //     *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
+                // }
                 *(sRobot->getMotor("Lift")) = 127;
-                if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
-                    conveyorRunning = true;
-                    *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-                }
             }
             else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
-                if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
-                    conveyorRunning = false;
-                    manualConveyorStop = false;
-                    *(sRobot->getMotor("Conveyor")) = 0;
-                }
+                // if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
+                //     conveyorRunning = false;
+                //     manualConveyorStop = false;
+                //     *(sRobot->getMotor("Conveyor")) = 0;
+                // }
                 *(sRobot->getMotor("Lift")) = -127;
             }
         }
@@ -137,15 +137,15 @@ namespace robotFuncs {
         double err, prevErr;
         int n = 0;
 
-        if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
-            conveyorRunning = false;
-            manualConveyorStop = false;
-            *(sRobot->getMotor("Conveyor")) = 0;
-        }
-        if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
-            conveyorRunning = true;
-            *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-        }
+        // if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
+        //     conveyorRunning = false;
+        //     manualConveyorStop = false;
+        //     *(sRobot->getMotor("Conveyor")) = 0;
+        // }
+        // if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
+        //     conveyorRunning = true;
+        //     *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
+        // }
 
         if (!liftRunning) {
             if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
@@ -255,7 +255,7 @@ namespace robotFuncs {
     }
 
     void auton_conveyor(int time) {
-        *(sRobot->getMotor("Conveyor")) = 60;
+        *(sRobot->getMotor("Conveyor")) = 90;
         pros::delay(time);
         *(sRobot->getMotor("Conveyor")) = 0;
     }

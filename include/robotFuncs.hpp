@@ -1,6 +1,6 @@
 #pragma once
 
-enum class liftStates {down = 675, low = 1050, lowmid = 800, mid = 1980, high = 2035};
+enum class liftStates {down = 675, low = 1050, lowmid = 700, mid = 1980, high = 2035};
 
 namespace robotFuncs {
     void drive(void* params);

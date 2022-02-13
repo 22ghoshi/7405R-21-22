@@ -15,6 +15,7 @@
  */
 void opcontrol() {
 	if (Thread::existsTask("move")) {
+		// Thread::tasks["move"]->notify()
 		Thread::killTask("move");
 	}
 	Thread::startTask("update", Controller::update);
@@ -32,7 +33,7 @@ void opcontrol() {
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::toggleTilter);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::toggleConveyor);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::toggleConveyor);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::testmove);
+	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::testmove);
 	// robotFuncs::toggleFrontClamp();
 	// robotFuncs::toggleBackClamp();
 	// robotFuncs::toggleTilter();

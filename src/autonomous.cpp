@@ -1,7 +1,7 @@
 #include "includes.hpp"
 
 void right() {
-	sOdom->setTarget(0, 1900, {0.21, 0.0002, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
+	sOdom->setTarget(0, 1850, {0.21, 0.0002, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
 	robotFuncs::toggleFrontClamp();
 	while (sOdom->currentPos.y < 1675) {
 		pros::delay(2);
@@ -9,26 +9,30 @@ void right() {
     // sOdom->waitUntilStop();
     robotFuncs::toggleFrontClamp();
     
-    sOdom->setTargetNow(0, 950, {0.22, 0.00001, 0.65}, 60, {5.0, 0.01, 1.0}, 7.0);
+    sOdom->setTargetNow(0, 950, {0.28, 0.0001, 0.65}, 50, {5.0, 0.01, 1.0}, 7.0);
     robotFuncs::autonLift(liftStates::lowmid);
 	sOdom->waitUntilStop();
 
-    sOdom->setTarget(-90.0, {1.5, 0.001, 1.4}, 2.0);
+    sOdom->setTarget(-85.0, {1.7, 0.003, 1.8}, 2.0);
 	robotFuncs::toggleTilter();
-    sOdom->setTarget(580, 925, {0.2, 0.00035, 0.25}, 30, {3.0, 0.02, 1.0}, 5.0);
+    sOdom->setTarget(585, 1000, {0.27, 0.0005, 0.3}, 30, {5.0, 0.02, 1.0}, 5.0);
     sOdom->waitUntilStop();
     robotFuncs::toggleBackClamp();
     pros::delay(250);
 	robotFuncs::toggleTilter();
 
-    sOdom->setTarget(0, 925, {0.1, 0.0005, 0.28}, 80, {2.0, 0.01, 1.0}, 10.0);
-	while(sOdom->currentPos.x > 100) {
-		pros::delay(2);
-	}
-	sOdom->setTargetNow(0, 0, {0, 0, 0}, 1000, {0, 0, 0}, 100);
-	robotFuncs::autonLift(liftStates::low);
-    sOdom->waitUntilStop();
-	robotFuncs::auton_conveyor(2000);
+    // sOdom->setTarget(-900, 1025, {0.2, 0.0005, 0.28}, 80, {2.0, 0.01, 1.0}, 10.0);
+	// while(sOdom->currentPos.x > -500) {
+	// 	pros::delay(2);
+	// }
+	// sOdom->setTargetNow(0, 0, {0, 0, 0}, 2000, {0, 0, 0}, 100);
+	// robotFuncs::autonLift(liftStates::low);
+    // sOdom->waitUntilStop();
+	// robotFuncs::auton_conveyor(2000);
+	// robotFuncs::toggleTilter();
+
+	// sOdom->setTargetNow(-45, {1.7, 0.001, 1.5}, 3.0);
+	// robotFuncs::toggleFrontClamp();
 }
 
 void rightwp() {
@@ -71,14 +75,17 @@ void leftwp() {
 }
 
 void leftneutral() {
-	sOdom->setTarget(0, 1860, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
+	sOdom->setTarget(0, 1900, {0.21, 0.0002, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
     robotFuncs::toggleFrontClamp();
-    robotFuncs::toggleBackClamp();
-    sOdom->waitUntilStop();
-    robotFuncs::toggleFrontClamp();
+	while (sOdom->currentPos.y < 1725) {
+		pros::delay(2);
+	}
+	robotFuncs::toggleFrontClamp();
     
-    sOdom->setTarget(0, 700, {0.27, 0.0001, 0.3}, 30, {5.0, 0.01, 1.0}, 7.0);
-    robotFuncs::autonLift(liftStates::low);
+    sOdom->setTargetNow(0, 600, {0.15, 0.00005, 0.65}, 30, {5.0, 0.01, 1.0}, 7.0);
+    // robotFuncs::autonLift(liftStates::mid);
+	// sOdom->setTarget(-100, {1.75, 0.005, 1.5}, 2.0);
+	// sOdom->setTarget(600, 170, {0.2, 0.00035, 0.25}, 30, {5.0, 0.02, 1.0}, 5.0);
 }
 
 void skills() {
