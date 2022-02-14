@@ -21,4 +21,5 @@ class Thread {
 	static void killTask(std::string name);
 	static bool isRunning(std::string name);
 	static bool existsTask(std::string name);
+    static void notifyTask(std::string name);
 };

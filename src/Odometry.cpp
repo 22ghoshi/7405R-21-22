@@ -149,7 +149,7 @@ void Odometry::moveTo(void* params) {
     double tP = 0, tI = 0, tD = 0;
     double prevTurnErr;
 
-    while(true) {
+    while(!pros::Task::notify_take(true, 20)) {
         turn = sOdom->currentPos.h;
         if (fabs(turn) > 360.0) {
             turn = std::fmod(turn, 360.0);
@@ -219,8 +219,6 @@ void Odometry::moveTo(void* params) {
         else {
             sRobot->stopDrive();
         }
-
-        pros::delay(20);
     }
 }
 

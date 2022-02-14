@@ -44,56 +44,61 @@ namespace robotFuncs {
     void liftPID(void* params) {
         double kP = 0.7;
         double kI = 0.00000;
-        double kD = 0.05;
+        double kD = 0.00;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 
         int n = 0;
 
         while(true) {
-            err = (double)liftState - sRobot->getPotentiometer("Lift")->get_value();
-
-            n += 1;
-            if (n == 1) {
-                prevErr = err;
+            if (pros::Task::notify_take(true, 20)) {
+                liftRunning = !liftRunning;
             }
 
-            if (fabs(err) > 25) {
-                P = err;
-                I += err;
-                D = err - prevErr;
+            if (liftRunning) {
+                err = (double)liftState - sRobot->getPotentiometer("Lift")->get_value();
 
-                double liftSpeed = (kP * P) + (kI * I) + (kD * D);
-                
-                *(sRobot->getMotor("Lift")) = liftSpeed;
+                n += 1;
+                if (n == 1) {
+                    prevErr = err;
+                }
+
+                if (fabs(err) > 25) {
+                    P = err;
+                    I += err;
+                    D = err - prevErr;
+                    prevErr = err;
+
+                    double liftSpeed = (kP * P) + (kI * I) + (kD * D);
+                    
+                    *(sRobot->getMotor("Lift")) = liftSpeed;
+                }
+                else {
+                    n = 0;
+                    I = 0;
+                    sRobot->getMotor("Lift")->move_velocity(0);
+                    sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                }
             }
-            else {
-                n = 0;
-                I = 0;
-                *(sRobot->getMotor("Lift")) = 0;
-                sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-            }
-            pros::delay(20);
         }
     }
 
     void moveLift() {
         if (!liftRunning) {
-            Thread::resumeTask("lift");
-            liftRunning = true;
+            Thread::notifyTask("lift");
         }
         if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
-            // if (conveyorRunning) {
-            //     conveyorRunning = false;
-            //     *(sRobot->getMotor("Conveyor")) = 0;
-            // }
+            if (conveyorRunning) {
+                conveyorRunning = false;
+                *(sRobot->getMotor("Conveyor")) = 0;
+            }
             liftState = liftStates::down;
         } 
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
-            // if (conveyorRunning) {
-            //     conveyorRunning = false;
-            //     *(sRobot->getMotor("Conveyor")) = 0;
-            // }
+            if (conveyorRunning) {
+                conveyorRunning = false;
+                *(sRobot->getMotor("Conveyor")) = 0;
+            }
             liftState = liftStates::low;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
@@ -106,24 +111,23 @@ namespace robotFuncs {
 
     void manualmoveLift() {
         if (liftRunning) {
-            Thread::pauseTask("lift");
-            liftRunning = false;
+            Thread::notifyTask("lift");
         }
         if (!liftRunning) { 
             manualn = 0;
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
-                // if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
-                //     conveyorRunning = true;
-                //     *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-                // }
+                if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
+                    conveyorRunning = true;
+                    *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
+                }
                 *(sRobot->getMotor("Lift")) = 127;
             }
             else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
-                // if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
-                //     conveyorRunning = false;
-                //     manualConveyorStop = false;
-                //     *(sRobot->getMotor("Conveyor")) = 0;
-                // }
+                if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
+                    conveyorRunning = false;
+                    *(sRobot->getMotor("Conveyor")) = 0;
+                    manualConveyorStop = false;
+                }
                 *(sRobot->getMotor("Lift")) = -127;
             }
         }
@@ -131,21 +135,21 @@ namespace robotFuncs {
 
     void manualholdLift() {
         double kP = 0.7;
-        double kI = 0.001;
-        double kD = 0.03;
+        double kI = 0.000;
+        double kD = 0.00;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
         int n = 0;
 
-        // if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
-        //     conveyorRunning = false;
-        //     manualConveyorStop = false;
-        //     *(sRobot->getMotor("Conveyor")) = 0;
-        // }
-        // if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
-        //     conveyorRunning = true;
-        //     *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-        // }
+        if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
+            conveyorRunning = false;
+            manualConveyorStop = false;
+            *(sRobot->getMotor("Conveyor")) = 0;
+        }
+        if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
+            conveyorRunning = true;
+            *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
+        }
 
         if (!liftRunning) {
             if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
@@ -165,6 +169,7 @@ namespace robotFuncs {
                     P = err;
                     I += err;
                     D = err - prevErr;
+                    prevErr = err;
 
                     double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                     
@@ -173,11 +178,9 @@ namespace robotFuncs {
                 else {
                     n = 0;
                     I = 0;
-                    *(sRobot->getMotor("Lift")) = 0;
+                    sRobot->getMotor("Lift")->move_velocity(0);
                     sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                 }
-                // *(sRobot->getMotor("Lift")) = 0;
-                // sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
         }
     }

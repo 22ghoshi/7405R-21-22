@@ -19,8 +19,10 @@ void Thread::resumeTask(std::string name) {
 }
 
 void Thread::killTask(std::string name) {
-	if (existsTask(name)) {
+	if (tasks.at(name).get_state() != pros::E_TASK_STATE_DELETED) {
 		tasks.at(name)->remove();
+	}
+	if (existsTask(name)) {
 		tasks.erase(name);
 	}
 }
@@ -31,4 +33,8 @@ bool Thread::isRunning(std::string name) {
 
 bool Thread::existsTask(std::string name) {
 	return tasks.find(name) != tasks.end();
+}
+
+void Thread::notifyTask(std::string name) {
+	tasks.at(name)->notify();
 }

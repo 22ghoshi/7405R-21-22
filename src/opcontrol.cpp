@@ -15,7 +15,8 @@
  */
 void opcontrol() {
 	if (Thread::existsTask("move")) {
-		// Thread::tasks["move"]->notify()
+		Thread::notifyTask("move");
+		pros::delay(20);
 		Thread::killTask("move");
 	}
 	Thread::startTask("update", Controller::update);
