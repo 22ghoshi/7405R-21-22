@@ -3,11 +3,12 @@
 namespace robotFuncs {
     liftStates liftState = liftStates::down;
     bool liftRunning = true;
-    bool conveyorRunning = false;
-    bool manualConveyorStop = false;
-    int conveyorDirection = 1;
     double manualLiftHoldVal = 0;
     int manualn = 0;
+
+    bool conveyorRunning = false;
+    int conveyorDirection = 1;
+
     bool frontClampState = false;
     bool backClampState =  false;
     bool tilterState = false;
@@ -88,17 +89,9 @@ namespace robotFuncs {
             Thread::notifyTask("lift");
         }
         if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
-            if (conveyorRunning) {
-                conveyorRunning = false;
-                *(sRobot->getMotor("Conveyor")) = 0;
-            }
             liftState = liftStates::down;
         } 
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_Y)) {
-            if (conveyorRunning) {
-                conveyorRunning = false;
-                *(sRobot->getMotor("Conveyor")) = 0;
-            }
             liftState = liftStates::low;
         }
         else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_X)) {
@@ -116,18 +109,9 @@ namespace robotFuncs {
         if (!liftRunning) { 
             manualn = 0;
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
-                if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
-                    conveyorRunning = true;
-                    *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-                }
                 *(sRobot->getMotor("Lift")) = 127;
             }
             else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
-                if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
-                    conveyorRunning = false;
-                    *(sRobot->getMotor("Conveyor")) = 0;
-                    manualConveyorStop = false;
-                }
                 *(sRobot->getMotor("Lift")) = -127;
             }
         }
@@ -140,16 +124,6 @@ namespace robotFuncs {
         double P = 0, I = 0, D = 0;
         double err, prevErr;
         int n = 0;
-
-        if (sRobot->getPotentiometer("Lift")->get_value() < 950 && conveyorRunning) {
-            conveyorRunning = false;
-            manualConveyorStop = false;
-            *(sRobot->getMotor("Conveyor")) = 0;
-        }
-        if (sRobot->getPotentiometer("Lift")->get_value() > 950 && !conveyorRunning && !manualConveyorStop) {
-            conveyorRunning = true;
-            *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-        }
 
         if (!liftRunning) {
             if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
@@ -185,47 +159,44 @@ namespace robotFuncs {
         }
     }
 
-    void toggleConveyor() {
-        if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_UP)) {
+    void conveyorIn() {
+        if (sRobot->getPotentiometer("Lift")->get_value() > 950) {
             if (conveyorDirection == 1) {
                 conveyorRunning = 1 - conveyorRunning;
-                if (!conveyorRunning) {
-                    manualConveyorStop = true;
-                }
-                else {
-                    manualConveyorStop = false;
-                }
             }
             else {
                 conveyorDirection = 1;
                 conveyorRunning = true;
             }
         }
-        else if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+    }
+
+    void conveyorOut() {
+        if (sRobot->getPotentiometer("Lift")->get_value() > 950) {
             if (conveyorDirection == -2) {
                 conveyorRunning = 1 - conveyorRunning;
-                if (!conveyorRunning) {
-                    manualConveyorStop = true;
-                }
-                else {
-                    manualConveyorStop = false;
-                }
             }
             else {
                 conveyorDirection = -2;
                 conveyorRunning = true;
             }
         }
+    }
 
-        if (conveyorRunning) {
-            *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
-        }
-        else {
-            *(sRobot->getMotor("Conveyor")) = 0;
-        }
+    void conveyor(void* params) {
+        while (true) {
+            if (sRobot->getPotentiometer("Lift")->get_value() > 950 && conveyorRunning) {
+                *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
+            }
+            else {
+                *(sRobot->getMotor("Conveyor")) = 0;
+            }
 
-        pros::lcd::set_text(6, "conveyorRunning: " + std::to_string(conveyorRunning));
-        pros::lcd::set_text(7, "conveyorDirection: " + std::to_string(conveyorDirection));
+
+            pros::lcd::set_text(6, std::to_string(conveyorRunning));
+            pros::lcd::set_text(7, std::to_string(conveyorDirection));
+            pros::delay(20);
+        }
     }
 
     void toggleFrontClamp() {

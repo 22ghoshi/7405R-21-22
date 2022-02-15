@@ -62,19 +62,19 @@ void MotorGroup::stop(brakeType brake) {
     switch(brake) {
         case brakeType::coast:
             for (auto const& motor : this->motors) {
-                motor.get()->getMotor()->set_velocity(0);
+                motor.get()->getMotor()->move_velocity(0);
                 motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
             }
             break;
         case brakeType::brake:
             for (auto const& motor : this->motors) {
-                motor.get()->getMotor()->set_velocity(0);
+                motor.get()->getMotor()->move_velocity(0);
                 motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
             }
             break;
         case brakeType::hold:
             for (auto const& motor : this->motors) {
-                motor.get()->getMotor()->set_velocity(0);
+                motor.get()->getMotor()->move_velocity(0);
                 motor.get()->getMotor()->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             }
             break;

@@ -19,7 +19,7 @@ void Thread::resumeTask(std::string name) {
 }
 
 void Thread::killTask(std::string name) {
-	if (tasks.at(name).get_state() != pros::E_TASK_STATE_DELETED) {
+	if (tasks.at(name)->get_state() != pros::E_TASK_STATE_DELETED) {
 		tasks.at(name)->remove();
 	}
 	if (existsTask(name)) {

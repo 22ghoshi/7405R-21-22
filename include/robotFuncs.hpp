@@ -10,7 +10,9 @@ namespace robotFuncs {
     void moveLift();
     void manualmoveLift();
     void manualholdLift();
-    void toggleConveyor();
+    void conveyor(void* params);
+    void conveyorIn();
+    void conveyorOut();
     void toggleFrontClamp();
     void toggleBackClamp();
     void toggleTilter();

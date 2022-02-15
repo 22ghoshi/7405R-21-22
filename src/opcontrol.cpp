@@ -22,6 +22,7 @@ void opcontrol() {
 	Thread::startTask("update", Controller::update);
 	Thread::startTask("drive", robotFuncs::drive);
 	Thread::startTask("lift", robotFuncs::liftPID);
+	Thread::startTask("conveyor", robotFuncs::conveyor);
 	Thread::startTask("print", robotFuncs::controllerPrint);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_X, robotFuncs::moveLift);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_B, robotFuncs::moveLift);
@@ -32,8 +33,8 @@ void opcontrol() {
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L1, robotFuncs::toggleFrontClamp);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_L2, robotFuncs::toggleBackClamp);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::toggleTilter);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::toggleConveyor);
-	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::toggleConveyor);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::conveyorIn);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::conveyorOut);
 	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::testmove);
 	// robotFuncs::toggleFrontClamp();
 	// robotFuncs::toggleBackClamp();
