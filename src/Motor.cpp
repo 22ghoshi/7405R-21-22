@@ -42,6 +42,12 @@ void MotorGroup::operator=(std::int32_t voltage) {
     }
 }
 
+void MotorGroup::moveVelocity(int velocity) {
+    for (auto const& motor : this->motors) {
+        motor.get()->getMotor()->move_velocity(velocity);
+    }
+}
+
 //returns average of all encoders in group
 double MotorGroup::getEncoders() {
     double totalVal = 0;

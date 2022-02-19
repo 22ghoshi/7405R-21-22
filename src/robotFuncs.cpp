@@ -6,8 +6,8 @@ namespace robotFuncs {
     double manualLiftHoldVal = 0;
     int manualn = 0;
 
-    bool conveyorRunning = false;
-    int conveyorDirection = 1;
+    bool conveyorRunning = true;
+    double conveyorDirection = 1;
 
     bool frontClampState = false;
     bool backClampState =  false;
@@ -43,9 +43,9 @@ namespace robotFuncs {
     }
 
     void liftPID(void* params) {
-        double kP = 0.7;
-        double kI = 0.00000;
-        double kD = 0.00;
+        double kP = 0.5;
+        double kI = 0.001;
+        double kD = 0.4;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 
@@ -57,7 +57,7 @@ namespace robotFuncs {
             }
 
             if (liftRunning) {
-                err = (double)liftState - sRobot->getPotentiometer("Lift")->get_value();
+                err = (double)liftState - sRobot->getMotor("Lift")->get_position();
 
                 n += 1;
                 if (n == 1) {
@@ -118,9 +118,9 @@ namespace robotFuncs {
     }
 
     void manualholdLift() {
-        double kP = 0.7;
-        double kI = 0.000;
-        double kD = 0.00;
+        double kP = 0.3;
+        double kI = 0.001;
+        double kD = 0.1;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
         int n = 0;
@@ -173,11 +173,11 @@ namespace robotFuncs {
 
     void conveyorOut() {
         if (sRobot->getPotentiometer("Lift")->get_value() > 950) {
-            if (conveyorDirection == -2) {
+            if (conveyorDirection == -1.5) {
                 conveyorRunning = 1 - conveyorRunning;
             }
             else {
-                conveyorDirection = -2;
+                conveyorDirection = -1.5;
                 conveyorRunning = true;
             }
         }
@@ -186,15 +186,12 @@ namespace robotFuncs {
     void conveyor(void* params) {
         while (true) {
             if (sRobot->getPotentiometer("Lift")->get_value() > 950 && conveyorRunning) {
-                *(sRobot->getMotor("Conveyor")) = 60 * conveyorDirection;
+                *(sRobot->getMotor("Conveyor")) = 70 * conveyorDirection;
             }
             else {
                 *(sRobot->getMotor("Conveyor")) = 0;
             }
-
-
-            pros::lcd::set_text(6, std::to_string(conveyorRunning));
-            pros::lcd::set_text(7, std::to_string(conveyorDirection));
+            
             pros::delay(20);
         }
     }
@@ -216,6 +213,35 @@ namespace robotFuncs {
 
     }
 
+    void auton_mogo(int ultrasonicLimit, double yLimit) {
+        while ((sOdom->currentPos.y.load() < 400 || sRobot->getUltrasonic("Front")->get_value() > ultrasonicLimit) && sOdom->currentPos.y.load() < yLimit) {
+            double turnErr = sRobot->getInertial("Inertial")->get_rotation();
+            // double speedSum = 200 + (1.5 * turnErr);
+            // double moveSpeed = 200 * (200 / speedSum);
+            // double turnSpeed = (turnErr * 1.5) * (200 / speedSum);
+            // sRobot->getMotorGroup("LeftDrive")->moveVelocity(moveSpeed + turnSpeed);
+            // sRobot->getMotorGroup("RightDrive")->moveVelocity(moveSpeed - turnSpeed);
+
+            double moveSpeed = 127;
+            if (sOdom->currentPos.y.load() > 1450) {
+                moveSpeed -= 0.027 * sOdom->currentPos.y.load();
+            }
+            double turnSpeed = turnErr * 1.5;
+            double speedSum = moveSpeed + fabs((turnSpeed));
+            double maxMoveSpeed = moveSpeed * (127 / speedSum);
+            double maxTurnSpeed = turnSpeed * (127 / speedSum);
+            if (moveSpeed > maxMoveSpeed) {
+                moveSpeed = maxMoveSpeed;
+            }
+            if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
+                turnSpeed = maxTurnSpeed;
+            }
+            sRobot->arcade(moveSpeed, -turnSpeed);
+            printf("\ncurrentPos = (%d, %d, %d), ultrasonic: %d, moveSpeed = %d, turnSpeed = %d, speedSum = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, sRobot->getUltrasonic("Front")->get_value(), (int)moveSpeed, (int)turnSpeed, (int)speedSum);
+            pros::delay(40);
+        }
+    }
+
     void auton_clamp(int time) {
         
     }
@@ -229,7 +255,7 @@ namespace robotFuncs {
     }
 
     void auton_conveyor(int time) {
-        *(sRobot->getMotor("Conveyor")) = 90;
+        *(sRobot->getMotor("Conveyor")) = 70;
         pros::delay(time);
         *(sRobot->getMotor("Conveyor")) = 0;
     }
@@ -243,6 +269,8 @@ namespace robotFuncs {
             sController->master.print(1, 0, ("Y: " + std::to_string(sOdom->currentPos.y.load())).c_str());
             pros::delay(50);
             sController->master.print(2, 0, ("H: " + std::to_string(sOdom->currentPos.h.load())).c_str());
+            pros::delay(50);
+            // sController->master.print(1, 0, ("ultrasonic: " + std::to_string(sRobot->getUltrasonic("Front")->get_value())).c_str());
             pros::delay(50);
         }
     }
