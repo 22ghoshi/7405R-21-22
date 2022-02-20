@@ -50,7 +50,7 @@ void opcontrol() {
 		// pros::lcd::set_text(3, "Avg: " + std::to_string((sRobot->getEncoder("Left")->get_value() + sRobot->getEncoder("Right")->get_value()) / 200.0));
 		// pros::lcd::set_text(3, "Inertial: " + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
 
-		pros::lcd::set_text(4, "Lift: " + std::to_string(sRobot->getMotor("Lift")->get_position()));
+		pros::lcd::set_text(4, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
 		pros::lcd::set_text(5, "ultrasonic: " + std::to_string(sRobot->getUltrasonic("Front")->get_value()));
 
 		// printf("\nbackleft: %d", (int)sRobot->getMotor("BackLeft")->get_temperature());

@@ -33,6 +33,7 @@ class Robot {
     void mecanum(int power, int strafe, int turn);
     void arcade(int power, int turn);
     void tank(int left, int right);
+    void move(double dist, std::initializer_list<double> mPID, double macc, std::initializer_list<double> tPID, double tacc);
     void stopDrive();
     void makeMotorGroup(std::string name, std::vector<std::string> motorNames);
     pros::Motor* getMotor(std::string name);

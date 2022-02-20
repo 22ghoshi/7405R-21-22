@@ -158,7 +158,7 @@ void Odometry::moveTo(void* params) {
         
         sOdom->moveDist = sOdom->currentPos.distanceTo(sOdom->targetPos);
 
-        if (sOdom->moveDist > 200.0) {
+        if (sOdom->moveDist > 200.0 && !sOdom->turning) {
             sOdom->targetPos.h = sOdom->currentPos.angleTo(sOdom->targetPos);
         }
 
@@ -319,7 +319,7 @@ void Odometry::setTarget(double setTurn, std::initializer_list<double> tPID, dou
     targetPos.x = currentPos.x.load();
     targetPos.y = currentPos.y.load();
     targetPos.h = setTurn;
-    macc = 100.0;
+    macc = 500.0;
     tkP = tPID.begin()[0];
     tkI = tPID.begin()[1];
     tkD = tPID.begin()[2];
@@ -350,7 +350,7 @@ void Odometry::setTargetNow(double setTurn, std::initializer_list<double> tPID, 
     targetPos.x = currentPos.x.load();
     targetPos.y = currentPos.y.load();
     targetPos.h = setTurn;
-    macc = 100.0;
+    macc = 500.0;
     tkP = tPID.begin()[0];
     tkI = tPID.begin()[1];
     tkD = tPID.begin()[2];

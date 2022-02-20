@@ -1,8 +1,8 @@
 #include "includes.hpp"
 
 //vector of autons
-std::vector<std::string> autonNames{"leftwp", "leftneutral", "middle", "right", "right wp", "skills", "test"};
-autonSelect autonselect = autonSelect::right;
+std::vector<std::string> autonNames{"leftwp", "leftneutral", "middle", "right", "rightneutral", "rightwp", "skills", "test"};
+autonSelect autonselect = autonSelect::leftneutral;
 
 void on_center_button() {
 	
@@ -51,11 +51,11 @@ void initialize() {
 
 	sController->master.clear();
 
-	sRobot->getMotor("Lift")->move_velocity(-100);
-	pros::delay(500);
-	sRobot->getMotor("Lift")->move_velocity(0);
-	pros::delay(100);
-	sRobot->getMotor("Lift")->tare_position();
+	// sRobot->getMotor("Lift")->move_velocity(-100);
+	// pros::delay(500);
+	// sRobot->getMotor("Lift")->move_velocity(0);
+	// pros::delay(100);
+	// sRobot->getMotor("Lift")->tare_position();
 }
 
 /**

@@ -43,9 +43,9 @@ namespace robotFuncs {
     }
 
     void liftPID(void* params) {
-        double kP = 0.5;
+        double kP = 0.7;
         double kI = 0.001;
-        double kD = 0.4;
+        double kD = 0.5;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
 
@@ -57,7 +57,7 @@ namespace robotFuncs {
             }
 
             if (liftRunning) {
-                err = (double)liftState - sRobot->getMotor("Lift")->get_position();
+                err = (double)liftState - sRobot->getPotentiometer("Lift")->get_value();
 
                 n += 1;
                 if (n == 1) {
@@ -118,7 +118,7 @@ namespace robotFuncs {
     }
 
     void manualholdLift() {
-        double kP = 0.3;
+        double kP = 0.5;
         double kI = 0.001;
         double kD = 0.1;
         double P = 0, I = 0, D = 0;
@@ -160,7 +160,7 @@ namespace robotFuncs {
     }
 
     void conveyorIn() {
-        if (sRobot->getPotentiometer("Lift")->get_value() > 950) {
+        if (sRobot->getPotentiometer("Lift")->get_value() > 1230) {
             if (conveyorDirection == 1) {
                 conveyorRunning = 1 - conveyorRunning;
             }
@@ -172,7 +172,7 @@ namespace robotFuncs {
     }
 
     void conveyorOut() {
-        if (sRobot->getPotentiometer("Lift")->get_value() > 950) {
+        if (sRobot->getPotentiometer("Lift")->get_value() > 1230) {
             if (conveyorDirection == -1.5) {
                 conveyorRunning = 1 - conveyorRunning;
             }
@@ -185,7 +185,7 @@ namespace robotFuncs {
 
     void conveyor(void* params) {
         while (true) {
-            if (sRobot->getPotentiometer("Lift")->get_value() > 950 && conveyorRunning) {
+            if (sRobot->getPotentiometer("Lift")->get_value() > 1230 && conveyorRunning) {
                 *(sRobot->getMotor("Conveyor")) = 70 * conveyorDirection;
             }
             else {
@@ -211,43 +211,6 @@ namespace robotFuncs {
         tilterState = 1 - tilterState;
         sRobot->getPiston("Tilter")->set_value(tilterState);
 
-    }
-
-    void auton_mogo(int ultrasonicLimit, double yLimit) {
-        while ((sOdom->currentPos.y.load() < 400 || sRobot->getUltrasonic("Front")->get_value() > ultrasonicLimit) && sOdom->currentPos.y.load() < yLimit) {
-            double turnErr = sRobot->getInertial("Inertial")->get_rotation();
-            // double speedSum = 200 + (1.5 * turnErr);
-            // double moveSpeed = 200 * (200 / speedSum);
-            // double turnSpeed = (turnErr * 1.5) * (200 / speedSum);
-            // sRobot->getMotorGroup("LeftDrive")->moveVelocity(moveSpeed + turnSpeed);
-            // sRobot->getMotorGroup("RightDrive")->moveVelocity(moveSpeed - turnSpeed);
-
-            double moveSpeed = 127;
-            if (sOdom->currentPos.y.load() > 1450) {
-                moveSpeed -= 0.027 * sOdom->currentPos.y.load();
-            }
-            double turnSpeed = turnErr * 1.5;
-            double speedSum = moveSpeed + fabs((turnSpeed));
-            double maxMoveSpeed = moveSpeed * (127 / speedSum);
-            double maxTurnSpeed = turnSpeed * (127 / speedSum);
-            if (moveSpeed > maxMoveSpeed) {
-                moveSpeed = maxMoveSpeed;
-            }
-            if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
-                turnSpeed = maxTurnSpeed;
-            }
-            sRobot->arcade(moveSpeed, -turnSpeed);
-            printf("\ncurrentPos = (%d, %d, %d), ultrasonic: %d, moveSpeed = %d, turnSpeed = %d, speedSum = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, sRobot->getUltrasonic("Front")->get_value(), (int)moveSpeed, (int)turnSpeed, (int)speedSum);
-            pros::delay(40);
-        }
-    }
-
-    void auton_clamp(int time) {
-        
-    }
-
-    void auton_declamp(int time) {
-        
     }
 
     void autonLift(liftStates setLiftState) {

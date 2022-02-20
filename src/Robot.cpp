@@ -3,7 +3,7 @@
 Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
-	//dead ports 4 5 6 10 14
+	//dead ports 4 5 6 10 14 19
 	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 18, true);
 	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 1);
 	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 14);
@@ -24,7 +24,7 @@ Robot::Robot() {
 	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 5, true);
 	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 7);
 	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 1);
-	sensors["Front Ultrasonic"] = std::make_unique<Sensor>("Front", sensorClass::ultrasonic, std::make_pair(2, 1));
+	sensors["Front Ultrasonic"] = std::make_unique<Sensor>("Front", sensorClass::ultrasonic, std::make_pair(20, 1));
 
 	getInertial("Inertial")->reset();
 	pros::delay(3000);
@@ -55,6 +55,58 @@ void Robot::tank(int left, int right) {
 	*(getMotorGroup("RightDrive")) = right;
 }
 
+void Robot::move(double dist, std::initializer_list<double> mPID, double macc, std::initializer_list<double> tPID, double tacc) {
+	double mkP = mPID.begin()[0];
+    double mkI = mPID.begin()[1];
+    double mkD = mPID.begin()[2];
+
+    double tkP = tPID.begin()[0];
+    double tkI = tPID.begin()[1];
+    double tkD = tPID.begin()[2];
+
+	double mP = 0, mI = 0, mD = 0;
+	double moveDist, prevMoveDist, moveSpeed;
+	double tP = 0, tI = 0, tD = 0;
+	double turnErr, prevTurnErr, turnSpeed;
+
+	moveDist = dist - sRobot->getMotorGroup("Drive")->getEncoders();
+	turnErr = -(sRobot->getInertial("Inertial")->get_rotation());
+	prevMoveDist = moveDist;
+	prevTurnErr = turnErr;
+
+	while (moveDist > macc || fabs(turnErr) > tacc) {
+		moveDist = dist - sRobot->getMotorGroup("Drive")->getEncoders();
+		turnErr = -(sRobot->getInertial("Inertial")->get_rotation());
+		prevMoveDist = moveDist;
+		prevTurnErr = turnErr;
+
+		mP = moveDist;
+		mI += moveDist;
+		mD = moveDist - prevMoveDist;
+		prevMoveDist = moveDist;
+
+		moveSpeed = (mkP *  mP) + (mkI * mI) + (mkD * mD);
+
+		tP = turnErr;
+		tI += turnErr;
+		tD = turnErr - prevTurnErr;
+		
+		turnSpeed = (tkP * tP) + (tkI * tI) + (tkD * tD);
+
+		double speedSum = moveSpeed + fabs(turnSpeed);
+        double maxMoveSpeed = moveSpeed * (127 / speedSum);
+        double maxTurnSpeed = turnSpeed * (127 / speedSum);
+		if (moveSpeed > maxMoveSpeed) {
+            moveSpeed = maxMoveSpeed;
+        }
+        if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
+            turnSpeed = maxTurnSpeed;
+        }
+
+        sRobot->arcade(moveSpeed, turnSpeed);
+	}
+
+}
 
 void Robot::stopDrive() {
     getMotorGroup("Drive")->stop(brakeType::brake);
