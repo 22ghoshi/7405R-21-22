@@ -5,7 +5,7 @@ Odometry* Odometry::pInstance = NULL;
 Odometry::Odometry() {
     currentPos.x = 0;
     currentPos.y = 0;
-    currentPos.h = sRobot->getInertial("Inertial")->get_rotation();
+    currentPos.h = 0;
     targetPos.x = 0;
     targetPos.y = 0;
     targetPos.h = 0;

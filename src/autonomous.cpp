@@ -173,6 +173,8 @@ void test() {
 void autonomous() {
 	Thread::startTask("lift", robotFuncs::liftPID);
 	robotFuncs::toggleTilter();
+	sRobot->getInertial("Inertial")->tare_rotation();
+	pros::delay(20);
 
 	switch (autonselect) {
 		case autonSelect::leftwp:

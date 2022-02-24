@@ -50,12 +50,7 @@ void initialize() {
 	Thread::startTask("fps", Odometry::FPS);
 
 	sController->master.clear();
-
-	// sRobot->getMotor("Lift")->move_velocity(-100);
-	// pros::delay(500);
-	// sRobot->getMotor("Lift")->move_velocity(0);
-	// pros::delay(100);
-	// sRobot->getMotor("Lift")->tare_position();
+	Thread::startTask("print", robotFuncs::controllerPrint);
 }
 
 /**

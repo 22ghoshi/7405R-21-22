@@ -173,11 +173,11 @@ namespace robotFuncs {
 
     void conveyorOut() {
         if (sRobot->getPotentiometer("Lift")->get_value() > 1230) {
-            if (conveyorDirection == -1.5) {
+            if (conveyorDirection == -2.3) {
                 conveyorRunning = 1 - conveyorRunning;
             }
             else {
-                conveyorDirection = -1.5;
+                conveyorDirection = -2.3;
                 conveyorRunning = true;
             }
         }
@@ -186,7 +186,7 @@ namespace robotFuncs {
     void conveyor(void* params) {
         while (true) {
             if (sRobot->getPotentiometer("Lift")->get_value() > 1230 && conveyorRunning) {
-                *(sRobot->getMotor("Conveyor")) = 70 * conveyorDirection;
+                *(sRobot->getMotor("Conveyor")) = 55 * conveyorDirection;
             }
             else {
                 *(sRobot->getMotor("Conveyor")) = 0;
@@ -225,16 +225,16 @@ namespace robotFuncs {
 
     void controllerPrint(void* params) {
         while(true) {
-            sController->master.print(0, 14, "bat: %g %", pros::battery::get_capacity());
+            sController->master.print(0, 12, "bat: %g %", pros::battery::get_capacity());
             pros::delay(50);
-            sController->master.print(0, 0, ("X: " + std::to_string(sOdom->currentPos.x.load())).c_str());
-            pros::delay(50);
-            sController->master.print(1, 0, ("Y: " + std::to_string(sOdom->currentPos.y.load())).c_str());
-            pros::delay(50);
-            sController->master.print(2, 0, ("H: " + std::to_string(sOdom->currentPos.h.load())).c_str());
-            pros::delay(50);
-            // sController->master.print(1, 0, ("ultrasonic: " + std::to_string(sRobot->getUltrasonic("Front")->get_value())).c_str());
-            pros::delay(50);
+            if (Thread::existsTask("fps")) {
+                sController->master.print(0, 0, ("X: " + std::to_string(sOdom->currentPos.x.load())).substr(0, 4).c_str());
+                pros::delay(50);
+                sController->master.print(1, 0, ("Y: " + std::to_string(sOdom->currentPos.y.load())).substr(0, 4).c_str());
+                pros::delay(50);
+                sController->master.print(2, 0, ("H: " + std::to_string(sOdom->currentPos.h.load())).substr(0, 4).c_str());
+                pros::delay(50);
+            }
         }
     }
 }
