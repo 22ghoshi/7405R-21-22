@@ -100,6 +100,17 @@ Piston::Piston(std::string pistonName, std::uint8_t pistonPort) {
     piston = std::make_unique<pros::ADIDigitalOut>(port);
 }
 
+Piston::Piston(std::string pistonName, std::pair<std::uint8_t, std::uint8_t> pistonPorts) {
+    if (pistonPorts.second < 1 || pistonPorts.second > 8) {
+        throw std::invalid_argument("piston triport 1 - 8 only");
+    }
+
+    this->name = pistonName;
+    this->port = pistonPorts.second;
+
+    piston = std::make_unique<pros::ADIDigitalOut>(std::make_pair(pistonPorts.first, port));
+}
+
 pros::ADIDigitalOut* Piston::getPiston() {
     return this->piston.get();
 }

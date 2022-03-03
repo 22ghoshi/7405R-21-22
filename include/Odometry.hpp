@@ -85,9 +85,9 @@ class Odometry {
     // static void oldmoveTo(void* params);
     static void moveTo(void* params);
     // static void tmoveTo(void* params);
-    void setTarget(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
+    void setTarget(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 15.0);
     void setTarget(double setTurn, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
-    void setTargetNow(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
+    void setTargetNow(double setx, double sety, std::initializer_list<double> mPID = {0.25, 0.0, 0.2}, double setmacc = 20, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 15.0);
     void setTargetNow(double setTurn, std::initializer_list<double> tPID = {1.5, 0.0, 0.4}, double settacc = 2.0);
     void waitUntilStop();
     double toRadians(double degrees);

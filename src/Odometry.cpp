@@ -35,6 +35,10 @@ Odometry* Odometry::Instance() {
 void Odometry::FPS(void* params) {
     double previousHeading = sOdom->currentPos.h;
     while(true) {
+        if (pros::Task::notify_take(true, 20)) {
+            sOdom->currentPos = Point();
+        }
+        
         sOdom->currentPos.h = sRobot->getInertial("Inertial")->get_rotation();
         double heading = sOdom->currentPos.h.load();
 
@@ -54,8 +58,6 @@ void Odometry::FPS(void* params) {
         pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
 		pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
         pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
-
-        pros::delay(20);
     }
 }
 
@@ -140,6 +142,7 @@ void Odometry::FPS(void* params) {
 void Odometry::moveTo(void* params) {
     pros::delay(20);
     double turn;
+    double heading;
     Point movePoint;
 
     int direction;
@@ -151,8 +154,9 @@ void Odometry::moveTo(void* params) {
 
     while(!pros::Task::notify_take(true, 20)) {
         turn = sOdom->currentPos.h;
-        if (fabs(turn) > 360.0) {
-            turn = std::fmod(turn, 360.0);
+        heading = sRobot->getInertial("Inertial")->get_heading();
+        if (!sOdom->turning) {
+            turn = heading < 180 ? heading : heading - 360;
         }
         movePoint = sOdom->targetPos - sOdom->currentPos;
         
@@ -162,7 +166,7 @@ void Odometry::moveTo(void* params) {
             sOdom->targetPos.h = sOdom->currentPos.angleTo(sOdom->targetPos);
         }
 
-        sOdom->turnErr = sOdom->targetPos.h.load() - sOdom->currentPos.h.load();
+        sOdom->turnErr = sOdom->targetPos.h.load() - turn;
 
         direction = cos(sOdom->toRadians(sOdom->turnErr)) > 0 ? 1 : -1;
         if(direction < 0 && !sOdom->turning) {

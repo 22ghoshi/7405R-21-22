@@ -34,7 +34,7 @@ void opcontrol() {
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::toggleTilter);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::conveyorIn);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::conveyorOut);
-	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::testmove);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_LEFT, robotFuncs::testmove);
 	// robotFuncs::toggleFrontClamp();
 	// robotFuncs::toggleBackClamp();
 	// robotFuncs::toggleTilter();
@@ -50,7 +50,8 @@ void opcontrol() {
 		// pros::lcd::set_text(3, "Inertial: " + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
 
 		pros::lcd::set_text(4, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
-		pros::lcd::set_text(5, "ultrasonic: " + std::to_string(sRobot->getUltrasonic("Front")->get_value()));
+		pros::lcd::set_text(5, "ultrasonic: " + std::to_string(sRobot->getUltrasonic("Front")->get_value()) + "   Distance: " + std::to_string(sRobot->getDistance("Back")->get()));
+		pros::lcd::set_text(6, "roll: " + std::to_string(sRobot->getInertial("Inertial")->get_roll()));
 
 		// printf("\nbackleft: %d", (int)sRobot->getMotor("BackLeft")->get_temperature());
 		// printf("\nbackright: %d", (int)sRobot->getMotor("BackRight")->get_temperature());

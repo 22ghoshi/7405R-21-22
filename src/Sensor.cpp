@@ -8,14 +8,15 @@ std::map<std::string, std::unique_ptr<pros::ADIEncoder>> Sensor::encoder;
 std::map<std::string, std::unique_ptr<pros::Rotation>> Sensor::rotation;
 std::map<std::string, std::unique_ptr<pros::Imu>> Sensor::inertial;
 std::map<std::string, std::unique_ptr<pros::Vision>> Sensor::vision;
+std::map<std::string, std::unique_ptr<pros::Distance>> Sensor::distance;
 
 Sensor::Sensor() {}
 
 Sensor::Sensor(std::string sensorName, sensorClass sensorType, std::uint8_t sensorPort, bool reversed) {
-    if ((sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation) && (sensorPort < 1 || sensorPort > 21)) {
+    if ((sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation || sensorType == sensorClass::distance) && (sensorPort < 1 || sensorPort > 21)) {
         throw std::invalid_argument("inertial/vision port 1 - 21 only");
     }
-    else if (sensorPort < 1 || sensorPort > 8 && !(sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation)) {
+    else if (sensorPort < 1 || sensorPort > 8 && !(sensorType == sensorClass::inertial || sensorType == sensorClass::vision || sensorType == sensorClass::rotation || sensorType == sensorClass::distance)) {
         throw std::invalid_argument("triport 1 - 8 only");
     }
     else if ((sensorType == sensorClass::ultrasonic || sensorType == sensorClass::encoder) && (sensorPort % 2 != 1)) {
@@ -51,6 +52,9 @@ Sensor::Sensor(std::string sensorName, sensorClass sensorType, std::uint8_t sens
             break;
         case sensorClass::vision:
             vision[name] = std::make_unique<pros::Vision>(port);
+            break;
+        case sensorClass::distance:
+            distance[name] = std::make_unique<pros::Distance>(port);
             break;
     }
 }

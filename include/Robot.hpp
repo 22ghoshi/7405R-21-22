@@ -47,4 +47,5 @@ class Robot {
     pros::Rotation* getRotation(std::string name);
     pros::Imu* getInertial(std::string name);
     pros::Vision* getVision(std::string name);
+    pros::Distance* getDistance(std::string name);
 };

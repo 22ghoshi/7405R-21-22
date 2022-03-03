@@ -3,28 +3,29 @@
 Robot* Robot::pInstance = NULL;
 
 Robot::Robot() {
-	//dead ports 4 5 6 10 14 19
-	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 18, true);
+	//dead ports 2 4 5 6 10 12 14 19
+	motors["BackLeft"] = std::make_shared<Motor>("BackLeft", motorGearset::GS200, 17, true);
 	motors["BackRight"] = std::make_shared<Motor>("BackRight", motorGearset::GS200, 1);
-	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 14);
-	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 3, true);
-	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS200, 17, true);
-	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 12);
+	motors["MidLeft"] = std::make_shared<Motor>("MidLeft", motorGearset::GS200, 3);
+	motors["MidRight"] = std::make_shared<Motor>("MidRight", motorGearset::GS200, 13, true);
+	motors["FrontLeft"] = std::make_shared<Motor>("FrontLeft", motorGearset::GS200, 15, true);
+	motors["FrontRight"] = std::make_shared<Motor>("FrontRight", motorGearset::GS200, 7);
 	makeMotorGroup("LeftDrive", {"BackLeft", "MidLeft", "FrontLeft"});
 	makeMotorGroup("RightDrive", {"BackRight", "MidRight", "FrontRight"});
 	makeMotorGroup("Drive", {"BackLeft", "BackRight", "MidLeft", "MidRight", "FrontLeft", "FrontRight"});
-	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS600, 11);
-	motors["Lift"] = std::make_shared<Motor>("Lift", motorGearset::GS100, 13, true);
+	motors["Conveyor"] = std::make_shared<Motor>("Conveyor", motorGearset::GS600, 21, true);
+	motors["Lift"] = std::make_shared<Motor>("Lift", motorGearset::GS100, 11, true);
 	
-	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 3);
+	pistons["FrontClamp"] = std::make_unique<Piston>("FrontClamp", 1);
 	pistons["BackClamp"] = std:: make_unique<Piston>("BackClamp", 4);
 	pistons["Tilter"] = std::make_unique<Piston>("Tilter", 2);
 	
-	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 15);
-	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 5, true);
-	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 7);
-	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 1);
-	sensors["Front Ultrasonic"] = std::make_unique<Sensor>("Front", sensorClass::ultrasonic, std::make_pair(20, 1));
+	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 20);
+	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 7);
+	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
+	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, std::make_pair(16, 8));
+	sensors["Front Ultrasonic"] = std::make_unique<Sensor>("Front", sensorClass::ultrasonic, std::make_pair(16, 1));
+	sensors["Back Distance"] = std::make_unique<Sensor>("Back", sensorClass::distance, 9);
 
 	getInertial("Inertial")->reset();
 	pros::delay(3000);
@@ -155,4 +156,8 @@ pros::Imu* Robot::getInertial(std::string name) {
 }
 pros::Vision* Robot::getVision(std::string name) {
 	return Sensor::vision.at(name).get();
+}
+
+pros::Distance* Robot::getDistance(std::string name) {
+	return Sensor::distance.at(name).get();
 }

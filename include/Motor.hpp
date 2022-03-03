@@ -48,5 +48,6 @@ class Piston {
     public:
     Piston();
     Piston(std::string pistonName, std::uint8_t pistonPort);
+    Piston(std::string pistonName, std::pair<std::uint8_t, std::uint8_t> pistonPorts);
     pros::ADIDigitalOut* getPiston();
 };

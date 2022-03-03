@@ -128,31 +128,116 @@ void leftneutral() {
 }
 
 void skills() {
-	sOdom->setTarget(0, 1800, {0.16, 0.0003, 0.5}, 40, {3.0, 0.001, 0.4}, 5.0);
-    robotFuncs::toggleFrontClamp();
-    robotFuncs::toggleBackClamp();
-    sOdom->waitUntilStop();
-    robotFuncs::toggleFrontClamp();
-    
-    sOdom->setTarget(0, 1130, {0.27, 0.0001, 0.3}, 30, {5.0, 0.01, 1.0}, 7.0);
-    robotFuncs::autonLift(liftStates::low);
+	robotFuncs::toggleTilter();
+	robotFuncs::toggleFrontClamp();
 
-    sOdom->setTarget(-68.0, {1.5, 0.001, 1.5}, 2.0);
-    sOdom->setTarget(697, 850, {0.32, 0.0001, 0.2}, 30, {5.0, 0.03, 1.0}, 5.0);
-    sOdom->waitUntilStop();
-    robotFuncs::toggleBackClamp();
-    pros::delay(250);
+	//align with red mogo
+	sOdom->setTarget(0, -200, {0.26, 0.00, 0.22}, 15);
+	sOdom->setTarget(54, {1.4, 0.0, 1.6}, 1.5);
 
-    sOdom->setTarget(472, 933, {0.4, 0.0001, 0.3}, 50, {5.0, 0.01, 1.0}, 5.0);
-    sOdom->waitUntilStop();
-    robotFuncs::toggleTilter();
-    sOdom->setTarget(0, {1.8, 0.001, 1.5}, 2.0);
-    sOdom->setTarget(426, 4000, {0.15, 0.00001, 0.3}, 100, {3.0, 0.01, 1.0}, 5.0);
+	// pick up red mogo
+	sOdom->setTarget(-575, -615, {0.13, 0.001, 0.5}, 40, {3.0, 0.01, 1.0}, 6);
 	sOdom->waitUntilStop();
-	// robotFuncs::toggleFrontClamp();
+	robotFuncs::toggleBackClamp();
+	pros::delay(500);
+	robotFuncs::toggleTilter();
+	robotFuncs::autonLift(liftStates::lowmid);
+	pros::delay(500);
 
-	// sOdom->setTarget(554, 2284, {0.3, 0.0001, 0.2}, 30, {2.0, 0.01, 0.5}, 5.0);
-	// sOdom->setTarget(90, {1.5, 0.001, 1.5}, 2.0);
+	//go to middle mogo
+	sOdom->setTargetNow(160, {1.5, 0.0, 2.25}, 1.5);
+	sOdom->setTarget(0, -1800, {0.1, 0.001, 0.3}, 70, {4.5, 0.01, 1.0}, 7);
+	while(sRobot->getUltrasonic("Front")->get_value() > 70) {
+		if (sOdom->currentPos.y < -1425) {
+			robotFuncs::autonLift(liftStates::down);
+		}
+		pros::delay(2);
+	}
+	robotFuncs::toggleFrontClamp();
+
+	//score neutral
+	sOdom->setTargetNow(1285, -4000, {0.095, 0.0001, 1.6}, 100, {5.0, 0.01, 2.0}, 15);
+	robotFuncs::autonLift(liftStates::veryhigh);
+	while (sOdom->currentPos.y > -3600) {
+		pros::delay(2);
+	}
+	sOdom->waitUntilStop();
+	pros::delay(500);
+	robotFuncs::autonLift(liftStates::mid);
+	pros::delay(750);
+	robotFuncs::toggleFrontClamp();
+	robotFuncs::autonLift(liftStates::high);
+	pros::delay(250);
+
+	//back up and drop red
+	sOdom->setTarget(890, -3330, {0.2, 0.0005, 0.4}, 50, {4.0, 0.01, 2.0}, 5);
+	pros::delay(500);
+	robotFuncs::autonLift(liftStates::lowmid);
+	sOdom->waitUntilStop();
+	pros::delay(250);
+	robotFuncs::toggleTilter();
+	pros::delay(250);
+	robotFuncs::toggleBackClamp();
+	pros::delay(250);
+	sOdom->setTarget(1100, -3620, {0.25, 0.001, 0.3}, 50, {4.0, 0.01, 2.0}, 7);
+	sOdom->setTarget(-29, {1.4, 0.001, 3.2}, 1.5);
+	robotFuncs::autonLift(liftStates::low);
+	sOdom->waitUntilStop();
+	pros::delay(250);
+	sOdom->setTarget(960, -3300, {0.23, 0.0015, 0.3}, 30, {3.5, 0.01, 2.5}, 5);
+	sOdom->waitUntilStop();
+	robotFuncs::toggleFrontClamp();
+	pros::delay(250);
+	robotFuncs::autonLift(liftStates::high);
+
+	//score red
+	sOdom->setTarget(-192, {1.2, 0.0001, 4.7}, 1.5);
+	sOdom->setTarget(1230, -4300, {0.12, 0.00007, 0.55}, 65, {4.0, 0.01, 2.0}, 15);
+	sOdom->waitUntilStop();
+	pros::delay(250);
+	robotFuncs::autonLift(liftStates::mid);
+	pros::delay(500);
+	robotFuncs::toggleFrontClamp();
+	robotFuncs::autonLift(liftStates::high);
+	pros::delay(500);
+
+	//back out and go to blue mogo
+	sOdom->setTarget(1000, -3466, {0.1, 0.0005, 0.6}, 50, {2.5, 0.001, 3.0}, 10);
+	sOdom->setTarget(-127, {1.9, 0.001, 2.7}, 1.5);
+	robotFuncs::autonLift(liftStates::lowmid);
+	sOdom->setTarget(-75, -4300, {0.12, 0.00005, 0.5}, 35, {4.5, 0.001, 2.0}, 7);
+	sOdom->setTarget(-225, {1.35, 0.001, 2.5}, 2);
+	sOdom->setTarget(325, -4800, {0.16, 0.001, 0.45}, 65, {3.5, 0.01, 2.0}, 10);
+	robotFuncs::autonLift(liftStates::low);
+	sOdom->waitUntilStop();
+	robotFuncs::toggleFrontClamp();
+
+	// go to blue platform
+	sOdom->setTarget(-343, {1.5, 0.001, 2.2}, 1.5);
+	sOdom->setTarget(1530, -730, {0.07, 0.000015, 0.9}, 100, {3.0, 0.01, 2.5}, 15);
+	pros::delay(1100);
+	robotFuncs::autonLift(liftStates::veryhigh);
+	sOdom->setTarget(-365, {2.0, 0.01, 2.0});
+	sOdom->waitUntilStop();
+	robotFuncs::autonLift(liftStates::mid);
+	pros::delay(750);
+	robotFuncs::toggleFrontClamp();
+	robotFuncs::autonLift(liftStates::high);
+
+	//get middle
+	// sOdom->setTarget()
+	// sOdom->setTarget(-184, {1.2, 0.001, 2.4}, 1.5);
+	// pros::delay(500);
+	// robotFuncs::autonLift(liftStates::lowmid);
+	// sOdom->setTarget(1623, -1500, {0.25, 0.0001, 0.45}, 30, {3.0, 0.01, 2.0});
+	// sOdom->waitUntilStop();
+	// robotFuncs::autonLift(liftStates::low);
+	// sOdom->setTarget(1635, -1733, {0.3, 0.001, 0.3}, 20, {4.0, 0.01, 2.0});
+	// sOdom->waitUntilStop();
+	// robotFuncs::toggleFrontClamp();
+	// pros::delay(250);
+	// robotFuncs::autonLift(liftStates::lowmid);
+	// sOdom->setTarget(-222, {1.5, 0.001, 2.0}, 1.5);
 }
 
 void test() {
@@ -172,41 +257,34 @@ void test() {
  */
 void autonomous() {
 	Thread::startTask("lift", robotFuncs::liftPID);
-	robotFuncs::toggleTilter();
+	Thread::startTask("conveyor", robotFuncs::conveyor);
 	sRobot->getInertial("Inertial")->tare_rotation();
 	pros::delay(20);
+	Thread::startTask("move", Odometry::moveTo);
 
 	switch (autonselect) {
 		case autonSelect::leftwp:
-			Thread::startTask("move", Odometry::moveTo);
 			leftwp();
 			break;
 		case autonSelect::leftneutral:
-			Thread::startTask("move", Odometry::moveTo);
 			leftneutral();
 			break;
 		case autonSelect::middle:
-			Thread::startTask("move", Odometry::moveTo);
 			middle();
 			break;
 		case autonSelect::right:
-			Thread::startTask("move", Odometry::moveTo);
 			right();
 			break;
 		case autonSelect::rightneutral:
-			Thread::startTask("move", Odometry::moveTo);
 			rightneutral();
 			break;
 		case autonSelect::rightwp:
-			Thread::startTask("move", Odometry::moveTo);
 			rightwp();
 			break;
 		case autonSelect::skills:
-			Thread::startTask("move", Odometry::moveTo);
 			skills();
 			break;
 		case autonSelect::test:
-			Thread::startTask("move", Odometry::moveTo);
 			test();
 			break;
     }
