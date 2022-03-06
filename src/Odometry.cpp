@@ -218,7 +218,7 @@ void Odometry::moveTo(void* params) {
             }
             
             sRobot->arcade(moveSpeed * direction, turnSpeed);
-            if (sOdom->n % 2 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)(moveSpeed * direction), (int)sOdom->turnErr, (int)turnSpeed); }
+            if (sOdom->n % 3 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d, lift = %d, dist = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)(moveSpeed * direction), (int)sOdom->turnErr, (int)turnSpeed, (int)sRobot->getPotentiometer("Lift")->get_value(), (int)sRobot->getDistance("Front")->get()); }
         }
         else {
             sRobot->stopDrive();

@@ -23,9 +23,10 @@ Robot::Robot() {
 	sensors["Inertial"] = std::make_unique<Sensor>("Inertial", sensorClass::inertial, 20);
 	sensors["Left Encoder"] = std::make_unique<Sensor>("Left", sensorClass::encoder, 7);
 	sensors["Right Encoder"] = std::make_unique<Sensor>("Right", sensorClass::encoder, 5);
-	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, std::make_pair(16, 8));
-	sensors["Front Ultrasonic"] = std::make_unique<Sensor>("Front", sensorClass::ultrasonic, std::make_pair(16, 1));
+	sensors["Lift Potentiometer"] = std::make_unique<Sensor>("Lift", sensorClass::potentiometer, 3);
+	// sensors["Front Ultrasonic"] = std::make_unique<Sensor>("Front", sensorClass::ultrasonic, std::make_pair(16, 1));
 	sensors["Back Distance"] = std::make_unique<Sensor>("Back", sensorClass::distance, 9);
+	sensors["Front Distance"] = std::make_unique<Sensor>("Front", sensorClass::distance, 10);
 
 	getInertial("Inertial")->reset();
 	pros::delay(3000);

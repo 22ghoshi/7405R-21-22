@@ -36,95 +36,6 @@ namespace robotFuncs {
         sRobot->getInertial("Inertial")->tare_rotation();
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
-        robotFuncs::toggleTilter();
-        robotFuncs::toggleFrontClamp();
-
-        //align with red mogo
-        sOdom->setTarget(0, -200, {0.26, 0.00, 0.22}, 15);
-        sOdom->setTarget(54, {1.4, 0.0, 1.6}, 1.5);
-
-        // pick up red mogo
-        sOdom->setTarget(-575, -615, {0.13, 0.001, 0.5}, 40, {3.0, 0.01, 1.0}, 6);
-        sOdom->waitUntilStop();
-        robotFuncs::toggleBackClamp();
-        pros::delay(500);
-        robotFuncs::toggleTilter();
-        robotFuncs::autonLift(liftStates::lowmid);
-        pros::delay(500);
-
-        //go to middle mogo
-        sOdom->setTargetNow(160, {1.5, 0.0, 2.25}, 1.5);
-        sOdom->setTarget(0, -1800, {0.1, 0.001, 0.3}, 70, {3.0, 0.01, 1.0}, 7);
-        while(sRobot->getUltrasonic("Front")->get_value() > 70) {
-            if (sOdom->currentPos.y < -1425) {
-                robotFuncs::autonLift(liftStates::down);
-            }
-            pros::delay(2);
-        }
-        robotFuncs::toggleFrontClamp();
-
-        //score neutral
-        // sOdom->setTarget(150);
-        sOdom->setTargetNow(1285, -4000, {0.1, 0.0001, 1.6}, 100, {5.0, 0.01, 2.0}, 15);
-        robotFuncs::autonLift(liftStates::high);
-        while (sOdom->currentPos.y > -3600) {
-            pros::delay(2);
-        }
-        sOdom->waitUntilStop();
-        pros::delay(500);
-        robotFuncs::autonLift(liftStates::mid);
-        pros::delay(750);
-        robotFuncs::toggleFrontClamp();
-        robotFuncs::autonLift(liftStates::high);
-        pros::delay(250);
-
-        //back up and drop red
-        sOdom->setTarget(890, -3330, {0.2, 0.0005, 0.4}, 40, {4.0, 0.01, 2.0}, 5);
-        pros::delay(500);
-        robotFuncs::autonLift(liftStates::lowmid);
-        sOdom->waitUntilStop();
-        pros::delay(250);
-        robotFuncs::toggleTilter();
-        pros::delay(250);
-        robotFuncs::toggleBackClamp();
-        pros::delay(250);
-        sOdom->setTarget(1060, -3620, {0.25, 0.001, 0.3}, 50, {4.0, 0.01, 2.0}, 5);
-        robotFuncs::autonLift(liftStates::down);
-        sOdom->setTarget(-26, {1.3, 0.001, 3.0}, 1.5);
-        robotFuncs::autonLift(liftStates::low);
-        sOdom->setTarget(950, -3300, {0.23, 0.0015, 0.3}, 30, {3.5, 0.01, 2.5}, 5);
-        sOdom->waitUntilStop();
-        robotFuncs::toggleFrontClamp();
-        pros::delay(250);
-        robotFuncs::autonLift(liftStates::high);
-
-        //score red
-        sOdom->setTarget(-192, {1.1, 0.0001, 4.7}, 1.5);
-        sOdom->setTarget(1220, -4300, {0.15, 0.0001, 0.55}, 65, {4.0, 0.01, 2.0}, 15);
-        sOdom->waitUntilStop();
-        pros::delay(250);
-        robotFuncs::autonLift(liftStates::mid);
-        pros::delay(500);
-        robotFuncs::toggleFrontClamp();
-        robotFuncs::autonLift(liftStates::high);
-        pros::delay(250);
-        // pros::delay(500);
-        // robotFuncs::autonLift(liftStates::down);
-        // pros::delay(250);
-        // robotFuncs::autonLift(liftStates::high);
-        // pros::delay(400);
-        // robotFuncs::autonLift(liftStates::down);
-
-        // //back out and go to blue mogo
-        sOdom->setTarget(1000, -3466, {0.1, 0.001, 0.6}, 50, {2.5, 0.001, 3.0}, 10);
-        sOdom->setTarget(-127, {1.9, 0.001, 2.7}, 1.5);
-        // robotFuncs::autonLift(liftStates::lowmid);
-        // sOdom->setTarget(-20, -4500, {0.1, 0.0001, 0.4}, 40, {3.0, 0.001, 2.0}, 7);
-        // sOdom->setTarget(-222, {1.5, 0.001, 2.3}, 1.5);
-        // sOdom->setTarget(260, -4830, {0.16, 0.001, 0.45}, 40, {3.5, 0.01, 2.0}, 10);
-        robotFuncs::autonLift(liftStates::low);
-        sOdom->waitUntilStop();
-        robotFuncs::toggleFrontClamp();
 
         sOdom->waitUntilStop();
         Thread::notifyTask("move");
@@ -135,8 +46,8 @@ namespace robotFuncs {
     }
 
     void liftPID(void* params) {
-        double kP = 0.35;
-        double kI = 0.008;
+        double kP = 0.5;
+        double kI = 0.003;
         double kD = 0.75;
         double P = 0, I = 0, D = 0;
         double err, prevErr;
@@ -203,8 +114,8 @@ namespace robotFuncs {
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 *(sRobot->getMotor("Lift")) = 127;
             }
-            else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2) && sRobot->getPotentiometer("Lift")->get_value() > 1080) {
-                *(sRobot->getMotor("Lift")) = sRobot->getPotentiometer("Lift")->get_value() > 1300 ? -127 : -60;
+            else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2) && sRobot->getPotentiometer("Lift")->get_value() > 900) {
+                *(sRobot->getMotor("Lift")) = sRobot->getPotentiometer("Lift")->get_value() > 1200 ? -127 : -60;
             }
         }
     }
@@ -221,7 +132,7 @@ namespace robotFuncs {
             if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
                 manualn++;
                 if (manualn == 40) {
-                    manualLiftHoldVal = sRobot->getPotentiometer("Lift")->get_value() > 1050 ? sRobot->getPotentiometer("Lift")->get_value() : 1050;
+                    manualLiftHoldVal = sRobot->getPotentiometer("Lift")->get_value() > 900 ? sRobot->getPotentiometer("Lift")->get_value() : 900;
                 }
 
                 err = manualLiftHoldVal - sRobot->getPotentiometer("Lift")->get_value();
@@ -252,33 +163,29 @@ namespace robotFuncs {
     }
 
     void conveyorIn() {
-        if (sRobot->getPotentiometer("Lift")->get_value() > 1230) {
-            if (conveyorDirection == 1) {
-                conveyorRunning = 1 - conveyorRunning;
-            }
-            else {
-                conveyorDirection = 1;
-                conveyorRunning = true;
-            }
+        if (conveyorDirection == 1) {
+            conveyorRunning = 1 - conveyorRunning;
+        }
+        else {
+            conveyorDirection = 1;
+            conveyorRunning = true;
         }
     }
 
     void conveyorOut() {
-        if (sRobot->getPotentiometer("Lift")->get_value() > 1230) {
-            if (conveyorDirection == -1.2) {
-                conveyorRunning = 1 - conveyorRunning;
-            }
-            else {
-                conveyorDirection = -1.2;
-                conveyorRunning = true;
-            }
+        if (conveyorDirection == -1) {
+            conveyorRunning = 1 - conveyorRunning;
+        }
+        else {
+            conveyorDirection = -1;
+            conveyorRunning = true;
         }
     }
 
     void conveyor(void* params) {
         while (true) {
-            if (sRobot->getPotentiometer("Lift")->get_value() > 1230 && conveyorRunning) {
-                *(sRobot->getMotor("Conveyor")) = 100 * conveyorDirection;
+            if (sRobot->getPotentiometer("Lift")->get_value() > 1069 && conveyorRunning) {
+                *(sRobot->getMotor("Conveyor")) = 127 * conveyorDirection;
             }
             else {
                 *(sRobot->getMotor("Conveyor")) = 0;
@@ -316,31 +223,49 @@ namespace robotFuncs {
     }
 
     void distanceBack(double distance) {
-        double mkP = 0.5;
-        double mkI = 0.001;
-        double mkD = 0.1;
+        double mkP = 0.3;
+        double mkI = 0.000001;
+        double mkD = 0.7;
         double mP = 0, mI = 0, mD = 0;
         double dist, prevDist;
         double moveSpeed;
 
-        double tkP = 0;
-        double tkI = 0;
-        double tkD = 0;
+        double tkP = 4.0;
+        double tkI = 0.01;
+        double tkD = 2.0;
         double tP = 0, tI = 0, tD = 0;
         double turnErr, prevTurnErr;
         double turnSpeed;
 
         Thread::pauseTask("move");
-        sRobot->arcade(127, 0);
-        while (sRobot->getInertial("Inertial")->get_roll() > 3) {
-            pros::delay(2);
+        sRobot->arcade(-97, -30);
+        pros::delay(250);
+        while (sRobot->getInertial("Inertial")->get_roll() > 2.5) {
+            moveSpeed = -127;
+            turnSpeed = -4.0 * (sRobot->getInertial("Inertial")->get_rotation());
+
+            double speedSum = fabs(moveSpeed) + fabs(turnSpeed);
+            double maxMoveSpeed = moveSpeed * (127 / speedSum);
+            double maxTurnSpeed = turnSpeed * (127 / speedSum);
+            if (fabs(moveSpeed) > fabs(maxMoveSpeed)) {
+                moveSpeed = maxMoveSpeed;
+            }
+            if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
+                turnSpeed = maxTurnSpeed;
+            }
+
+            sRobot->arcade(moveSpeed, turnSpeed);
+            printf("\nturn = %d", (int)sRobot->getInertial("Inertial")->get_rotation());
+            pros::delay(20);
         }
-        dist = sRobot->getDistance("Back")->get() - 400.0;
+        sRobot->stopDrive();
+        pros::delay(500);
+        dist = sRobot->getDistance("Back")->get() - distance;
         prevDist = dist;
         turnErr = -1 * (sRobot->getInertial("Inertial")->get_rotation());
         prevTurnErr = turnErr;
-        while (dist > 10 || turnErr > 2) {
-            dist = sRobot->getDistance("Back")->get() - 400.0;
+        while (fabs(dist) > 15 || fabs(turnErr) > 2) {
+            dist = sRobot->getDistance("Back")->get() - distance;
             turnErr = -1 * (sRobot->getInertial("Inertial")->get_rotation());
 
             mP = dist;
@@ -357,15 +282,32 @@ namespace robotFuncs {
 
             turnSpeed = (tkP * tP) + (tkI * tI) + (tkD * tD);
 
-            sRobot->arcade(moveSpeed, turnSpeed);
+            double speedSum = fabs(moveSpeed) + fabs(turnSpeed);
+            double maxMoveSpeed = moveSpeed * (127 / speedSum);
+            double maxTurnSpeed = turnSpeed * (127 / speedSum);
+            if (fabs(moveSpeed) > fabs(maxMoveSpeed)) {
+                moveSpeed = maxMoveSpeed;
+            }
+            if (fabs(turnSpeed) > fabs(maxTurnSpeed)) {
+                turnSpeed = maxTurnSpeed;
+            }
+
+            if (dist < 0) {
+                sRobot->arcade(-70, turnSpeed);
+            }   
+            else {
+                sRobot->arcade(-moveSpeed, turnSpeed);
+            }
 
             printf("\ndist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)dist, (int)moveSpeed, (int)turnErr, (int)turnSpeed);
             pros::delay(20);
         }
-
+        printf("\nfinished");
         sRobot->stopDrive();
         pros::delay(500);
         Thread::notifyTask("fps");
+        pros::delay(500);
+        Thread::resumeTask("move");
     }
 
     void controllerPrint(void* params) {
