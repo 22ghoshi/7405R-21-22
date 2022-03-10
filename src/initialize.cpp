@@ -44,7 +44,12 @@ void initialize() {
     pros::lcd::register_btn0_cb(on_left_button);
 	pros::lcd::register_btn2_cb(on_right_button);
 
-	Robot::Instance();
+	// init sensors
+	Robot::getSensor<sensors::LeftEncoder>();
+	Robot::getSensor<sensors::RightEncoder>();
+	Robot::getSensor<sensors::LiftPotentiometer>();
+	Robot::getSensor<sensors::Inertial>().reset();
+	pros::delay(3000);
 
 	Odometry::Instance();
 	Thread::startTask("fps", Odometry::FPS);

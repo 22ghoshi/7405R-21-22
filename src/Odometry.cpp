@@ -39,11 +39,11 @@ void Odometry::FPS(void* params) {
             sOdom->currentPos = Point();
         }
         
-        sOdom->currentPos.h = sRobot->getInertial("Inertial")->get_rotation();
+        sOdom->currentPos.h = Robot::getSensor<sensors::Inertial>().get_rotation();
         double heading = sOdom->currentPos.h.load();
 
         double deltaRotation = heading - previousHeading;
-        double verticalMovement = ((sRobot->getEncoder("Left")->get_value() + sRobot->getEncoder("Right")->get_value()) / 2.0);
+        double verticalMovement = ((Robot::getSensor<sensors::LeftEncoder>().get_value() + Robot::getSensor<sensors::RightEncoder>().get_value()) / 2.0);
 
         Point deltaPoint;
         deltaPoint.x = (verticalMovement * sin(sOdom->toRadians(heading)));
@@ -51,8 +51,8 @@ void Odometry::FPS(void* params) {
 
         sOdom->currentPos += deltaPoint;
         
-        sRobot->getEncoder("Left")->reset();
-        sRobot->getEncoder("Right")->reset();
+        Robot::getSensor<sensors::LeftEncoder>().reset();
+        Robot::getSensor<sensors::RightEncoder>().reset();
         previousHeading = heading;
 
         pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
@@ -154,7 +154,7 @@ void Odometry::moveTo(void* params) {
 
     while(!pros::Task::notify_take(true, 20)) {
         turn = sOdom->currentPos.h;
-        heading = sRobot->getInertial("Inertial")->get_heading();
+        heading = Robot::getSensor<sensors::Inertial>().get_heading();
         if (!sOdom->turning) {
             turn = heading < 180 ? heading : heading - 360;
         }
@@ -189,7 +189,7 @@ void Odometry::moveTo(void* params) {
 
             double turnSpeed = (sOdom->tkP * tP) + (sOdom->tkI * tI) + (sOdom->tkD * tD);
             
-            sRobot->arcade(0, turnSpeed);
+            Robot::arcade(0, turnSpeed);
             if (sOdom->n % 2 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = turnbefore, turnErr = %d, turnSpeed = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)sOdom->turnErr, (int)turnSpeed); }
         }
         else if (sOdom->moveDist > sOdom->macc) {
@@ -217,11 +217,11 @@ void Odometry::moveTo(void* params) {
                 turnSpeed = maxTurnSpeed;
             }
             
-            sRobot->arcade(moveSpeed * direction, turnSpeed);
-            if (sOdom->n % 3 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d, lift = %d, dist = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)(moveSpeed * direction), (int)sOdom->turnErr, (int)turnSpeed, (int)sRobot->getPotentiometer("Lift")->get_value(), (int)sRobot->getDistance("Front")->get()); }
+            Robot::arcade(moveSpeed * direction, turnSpeed);
+            if (sOdom->n % 3 == 0) { printf("\ncurrentPos = (%d, %d, %d), targetPos = (%d, %d, %d), move = %d, moveDist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d, lift = %d, dist = %d", (int)sOdom->currentPos.x, (int)sOdom->currentPos.y, (int)sOdom->currentPos.h, (int)sOdom->targetPos.x, (int)sOdom->targetPos.y, (int)sOdom->targetPos.h, sOdom->moves, (int)sOdom->moveDist, (int)(moveSpeed * direction), (int)sOdom->turnErr, (int)turnSpeed, (int)Robot::getSensor<sensors::LiftPotentiometer>().get_value(), (int)Robot::getSensor<sensors::FrontDistance>().get()); }
         }
         else {
-            sRobot->stopDrive();
+            Robot::stopDrive();
         }
     }
 }

@@ -12,7 +12,7 @@ void right() {
 
 	sOdom->setTarget(0, 2200, {0.28, 0.0001, 0.45}, 40, {4.0, 0.001, 0.4}, 15.0);
 	robotFuncs::autonLift(liftStates::low);
-	while ((sOdom->currentPos.y < 1000 || sRobot->getDistance("Front")->get() > 95 || fabs(sRobot->getDistance("Front")->get()) < 1) && sOdom->currentPos.y < 2100) {
+	while ((sOdom->currentPos.y < 1000 || Robot::getSensor<sensors::FrontDistance>().get() > 95 || fabs(Robot::getSensor<sensors::FrontDistance>().get()) < 1) && sOdom->currentPos.y < 2100) {
 		pros::delay(2);
 	};
 	robotFuncs::toggleFrontClamp();
@@ -51,7 +51,7 @@ void rightneutral() {
 
 	sOdom->setTarget(0, 2000, {0.14, 0.0000, 1.0}, 40, {3.0, 0.001, 0.4}, 5.0);
 	robotFuncs::autonLift(liftStates::downlow);
-	while ((sOdom->currentPos.y < 1500 || sRobot->getDistance("Front")->get() > 85) && sOdom->currentPos.y < 1800) {
+	while ((sOdom->currentPos.y < 1500 || Robot::getSensor<sensors::FrontDistance>().get() > 85) && sOdom->currentPos.y < 1800) {
 		pros::delay(2);
 	};
 	robotFuncs::toggleFrontClamp();
@@ -93,7 +93,6 @@ void leftwp() {
 	robotFuncs::toggleTilter();
 	sOdom->setTarget(0, 0, {0.25, 0.0001, 0.2}, 70, {1.0, 0.0, 0.7}, 10);
 	sOdom->waitUntilStop();
-	robotFuncs::auton_conveyor(2000);
 }
 
 void left() {
@@ -102,7 +101,7 @@ void left() {
 
 	sOdom->setTarget(0, 2200, {0.28, 0.0001, 0.45}, 40, {4.0, 0.001, 0.4}, 15.0);
 	robotFuncs::autonLift(liftStates::low);
-	while ((sOdom->currentPos.y < 1400 || sRobot->getDistance("Front")->get() > 95 || fabs(sRobot->getDistance("Front")->get()) < 1) && sOdom->currentPos.y < 2050) {
+	while ((sOdom->currentPos.y < 1400 || Robot::getSensor<sensors::FrontDistance>().get() > 95 || fabs(Robot::getSensor<sensors::FrontDistance>().get()) < 1) && sOdom->currentPos.y < 2050) {
 		pros::delay(2);
 	};
 	robotFuncs::toggleFrontClamp();
@@ -116,23 +115,23 @@ void left() {
 	pros::delay(500);
 	
 	// sOdom->setTarget(430, sOdom->currentPos.y.load(), {0.18, 0.001, 0.5}, 70, {4.5, 0.01, 3.5});
-	sRobot->tank(-55, -77);
-	while (sRobot->getDistance("Back")->get() > 40 && time < 625) {
-		printf("\ndist = %d", (int)sRobot->getDistance("Back")->get());
+	Robot::tank(-55, -77);
+	while (Robot::getSensor<sensors::BackDistance>().get() > 40 && time < 625) {
+		printf("\ndist = %d", (int)Robot::getSensor<sensors::BackDistance>().get());
 		pros::delay(2);
 		time += 2;
 	}
-	sRobot->stopDrive();
+	Robot::stopDrive();
 	robotFuncs::toggleBackClamp();
 	pros::delay(250);
 	robotFuncs::toggleTilter();
 	pros::delay(250);
-	sRobot->arcade(80, 0);
+	Robot::arcade(80, 0);
 	pros::delay(250);
-	sRobot->arcade(40, 0);
+	Robot::arcade(40, 0);
 	robotFuncs::conveyorIn();
 	pros::delay(1000);
-	sRobot->stopDrive();
+	Robot::stopDrive();
 	pros::delay(1500);
 	// robotFuncs::toggleTilter();
 	// robotFuncs::toggleBackClamp();
@@ -158,7 +157,7 @@ void skills() {
 	//go to middle mogo
 	sOdom->setTargetNow(160, {1.5, 0.0, 2.25}, 1.5);
 	sOdom->setTarget(0, -1800, {0.1, 0.001, 0.3}, 70, {4.5, 0.01, 1.0}, 7);
-	while((sRobot->getDistance("Front")->get() > 48 || fabs(sRobot->getDistance("Front")->get()) < 1) && time < 2500) {
+	while((Robot::getSensor<sensors::FrontDistance>().get() > 48 || fabs(Robot::getSensor<sensors::FrontDistance>().get()) < 1) && time < 2500) {
 		if (sOdom->currentPos.y < -1375) {
 			robotFuncs::autonLift(liftStates::down);
 		}
@@ -176,7 +175,7 @@ void skills() {
 	sOdom->waitUntilStop();
 	pros::delay(500);
 	robotFuncs::autonLift(liftStates::mid);
-	while (sRobot->getPotentiometer("Lift")->get_value() > 1940) {
+	while (Robot::getSensor<sensors::LiftPotentiometer>().get_value() > 1940) {
 		pros::delay(2);
 	}
 	robotFuncs::toggleFrontClamp();
@@ -210,7 +209,7 @@ void skills() {
 	sOdom->waitUntilStop();
 	pros::delay(250);
 	robotFuncs::autonLift(liftStates::mid);
-	while (sRobot->getPotentiometer("Lift")->get_value() > 1975) {
+	while (Robot::getSensor<sensors::LiftPotentiometer>().get_value() > 1975) {
 		pros::delay(2);
 	}
 	robotFuncs::toggleFrontClamp();
@@ -277,7 +276,7 @@ void skills() {
 	sOdom->setTarget(-386, {1.3, 0.001, 3.0}, 1.5);
 	sOdom->setTarget(3360, -2720, {0.12, 0.0005, 0.55}, 40);
 	time = 0;
-	while((sRobot->getDistance("Front")->get() > 48 || fabs(sRobot->getDistance("Front")->get()) < 1) && time < 2500) {
+	while((Robot::getSensor<sensors::FrontDistance>().get() > 48 || fabs(Robot::getSensor<sensors::FrontDistance>().get()) < 1) && time < 2500) {
 		if (sOdom->currentPos.y > -3450) {
 			robotFuncs::autonLift(liftStates::low);
 		}
@@ -361,7 +360,7 @@ void test() {
 void autonomous() {
 	Thread::startTask("lift", robotFuncs::liftPID);
 	Thread::startTask("conveyor", robotFuncs::conveyor);
-	sRobot->getInertial("Inertial")->tare_rotation();
+	Robot::getSensor<sensors::Inertial>().tare_rotation();
 	pros::delay(20);
 	Thread::startTask("move", Odometry::moveTo);
 
@@ -395,5 +394,5 @@ void autonomous() {
 	Thread::notifyTask("move");
 	pros::delay(20);
 	Thread::killTask("move");
-	sRobot->stopDrive();
+	Robot::stopDrive();
 }

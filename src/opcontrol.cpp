@@ -34,24 +34,28 @@ void opcontrol() {
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_RIGHT, robotFuncs::toggleTilter);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_UP, robotFuncs::conveyorIn);
 	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_DOWN, robotFuncs::conveyorOut);
-	// sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_LEFT, robotFuncs::testmove);
+	sController->registerButtonNewPress(pros::E_CONTROLLER_DIGITAL_LEFT, robotFuncs::showPotentiometer);
 	// robotFuncs::toggleFrontClamp();
 	// robotFuncs::toggleBackClamp();
 	// robotFuncs::toggleTilter();
 
+	// auto encoder = pros::c::adi_encoder_init(7, 8, false);
 	while (true) {
 		// pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
 		// pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
         // pros::lcd::set_text(3, "Inertial: " + std::to_string(sOdom->currentPos.h.load()));
 		
-		// pros::lcd::set_text(1, "Right: " + std::to_string(sRobot->getEncoder("Right")->get_value()));
-		// pros::lcd::set_text(2, "Left: " + std::to_string(sRobot->getEncoder("Left")->get_value()));
+		// pros::lcd::set_text(1, "Right: " + std::to_string(Robot::getSensor<sensors::RightEncoder>().get_value()));
+		// pros::lcd::set_text(2, "Left: " + std::to_string(Robot::getSensor<sensors::LeftEncoder>().get_value()));
 		// pros::lcd::set_text(3, "Avg: " + std::to_string((sRobot->getEncoder("Left")->get_value() + sRobot->getEncoder("Right")->get_value()) / 200.0));
-		// pros::lcd::set_text(3, "Inertial: " + std::to_string(sRobot->getInertial("Inertial")->get_rotation()));
+		// pros::lcd::set_text(3, "Inertial: " + std::to_string(Robot::getSensor<sensors::Inertial>().get_rotation()));
 
-		pros::lcd::set_text(4, "Lift: " + std::to_string(sRobot->getPotentiometer("Lift")->get_value()));
-		pros::lcd::set_text(5, "FrontDist: " + std::to_string(sRobot->getDistance("Front")->get()) + "   BackDist: " + std::to_string(sRobot->getDistance("Back")->get()));
-		pros::lcd::set_text(6, "roll: " + std::to_string(sRobot->getInertial("Inertial")->get_roll()));
+		
+		// pros::lcd::set_text(2, std::to_string(pros::c::adi_encoder_get(encoder)));
+		
+		// pros::lcd::set_text(4, "Lift: " + std::to_string(Robot::getSensor<sensors::LiftPotentiometer>().get_value()));
+		// pros::lcd::set_text(5, "FrontDist: " + std::to_string(Robot::getSensor<sensors::FrontDistance>().get()) + "   BackDist: " + std::to_string(Robot::getSensor<sensors::BackDistance>().get()));
+		// pros::lcd::set_text(6, "roll: " + std::to_string(Robot::getSensor<sensors::Inertial>().get_roll()));
 
 		// printf("\nbackleft: %d", (int)sRobot->getMotor("BackLeft")->get_temperature());
 		// printf("\nbackright: %d", (int)sRobot->getMotor("BackRight")->get_temperature());

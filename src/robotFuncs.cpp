@@ -21,8 +21,8 @@ namespace robotFuncs {
             int righty = sController->getAnalog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
             int power = lefty >= 0 ? ((int)(127.0 * std::pow((double)lefty / 127.0, 15.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-lefty) / 127.0, 15.0 / 9.0)));
             int turn = rightx >= 0 ? ((int)(127.0 * std::pow((double)rightx / 127.0, 21.0 / 9.0))) : -1 * ((int)(127.0 * std::pow((double)(-rightx) / 127.0, 21.0 / 9.0)));
-            sRobot->arcade(power, turn);
-            // sRobot->arcade(lefty, rightx);
+            Robot::arcade(power, turn);
+            // Robot::arcade(lefty, rightx);
             pros::delay(20);
         }
     }
@@ -33,7 +33,7 @@ namespace robotFuncs {
 
     void testmove() {
         Thread::pauseTask("drive");
-        sRobot->getInertial("Inertial")->tare_rotation();
+        Robot::getSensor<sensors::Inertial>().tare_rotation();
         Thread::startTask("move", Odometry::moveTo);
         pros::delay(100);
 
@@ -41,7 +41,7 @@ namespace robotFuncs {
         Thread::notifyTask("move");
         pros::delay(20);
         Thread::killTask("move");
-        sRobot->stopDrive();
+        Robot::stopDrive();
         // Thread::resumeTask("drive");
     }
 
@@ -60,7 +60,7 @@ namespace robotFuncs {
             }
 
             if (liftRunning) {
-                err = (double)liftState - sRobot->getPotentiometer("Lift")->get_value();
+                err = (double)liftState - Robot::getSensor<sensors::LiftPotentiometer>().get_value();
 
                 n += 1;
                 if (n == 1) {
@@ -75,20 +75,20 @@ namespace robotFuncs {
 
                     double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                     
-                    *(sRobot->getMotor("Lift")) = liftSpeed;
+                    Robot::getMotor<motors::Lift>() = liftSpeed;
                 }
                 else {
                     n = 0;
                     I = 0;
-                    sRobot->getMotor("Lift")->move_velocity(0);
-                    sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                    Robot::getMotor<motors::Lift>().move_velocity(0);
+                    Robot::getMotor<motors::Lift>().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                 }
             }
         }
     }
 
     void moveLift() {
-        if (!liftRunning) {
+        if (!liftRunning && Thread::existsTask("lift")) {
             Thread::notifyTask("lift");
         }
         if (sController->getDigitalNewPress(pros::E_CONTROLLER_DIGITAL_B)) {
@@ -106,16 +106,16 @@ namespace robotFuncs {
     }
 
     void manualmoveLift() {
-        if (liftRunning) {
+        if (liftRunning && Thread::existsTask("lift")) {
             Thread::notifyTask("lift");
         }
         if (!liftRunning) { 
             manualn = 0;
             if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1)) {
-                *(sRobot->getMotor("Lift")) = 127;
+                Robot::getMotor<motors::Lift>() = 127;
             }
-            else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2) && sRobot->getPotentiometer("Lift")->get_value() > 900) {
-                *(sRobot->getMotor("Lift")) = sRobot->getPotentiometer("Lift")->get_value() > 1200 ? -127 : -60;
+            else if (sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2) && Robot::getSensor<sensors::LiftPotentiometer>().get_value() > 900) {
+                Robot::getMotor<motors::Lift>() = Robot::getSensor<sensors::LiftPotentiometer>().get_value() > 1200 ? -127 : -60;
             }
         }
     }
@@ -132,10 +132,10 @@ namespace robotFuncs {
             if (!sController->getDigital(pros::E_CONTROLLER_DIGITAL_R1) && !sController->getDigital(pros::E_CONTROLLER_DIGITAL_R2)) {
                 manualn++;
                 if (manualn == 40) {
-                    manualLiftHoldVal = sRobot->getPotentiometer("Lift")->get_value() > 900 ? sRobot->getPotentiometer("Lift")->get_value() : 900;
+                    manualLiftHoldVal = Robot::getSensor<sensors::LiftPotentiometer>().get_value() > 900 ? Robot::getSensor<sensors::LiftPotentiometer>().get_value() : 900;
                 }
 
-                err = manualLiftHoldVal - sRobot->getPotentiometer("Lift")->get_value();
+                err = manualLiftHoldVal - Robot::getSensor<sensors::LiftPotentiometer>().get_value();
 
                 n += 1;
                 if (n == 1) {
@@ -150,13 +150,13 @@ namespace robotFuncs {
 
                     double liftSpeed = (kP * P) + (kI * I) + (kD * D);
                     
-                    *(sRobot->getMotor("Lift")) = liftSpeed;
+                    Robot::getMotor<motors::Lift>() = liftSpeed;
                 }
                 else {
                     n = 0;
                     I = 0;
-                    sRobot->getMotor("Lift")->move_velocity(0);
-                    sRobot->getMotor("Lift")->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                    Robot::getMotor<motors::Lift>().move_velocity(0);
+                    Robot::getMotor<motors::Lift>().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                 }
             }
         }
@@ -184,11 +184,11 @@ namespace robotFuncs {
 
     void conveyor(void* params) {
         while (true) {
-            if (sRobot->getPotentiometer("Lift")->get_value() > 1069 && conveyorRunning) {
-                *(sRobot->getMotor("Conveyor")) = 127 * conveyorDirection;
+            if (Robot::getSensor<sensors::LiftPotentiometer>().get_value() > 1069 && conveyorRunning) {
+                Robot::getMotor<motors::Conveyor>() = 127 * conveyorDirection;
             }
             else {
-                *(sRobot->getMotor("Conveyor")) = 0;
+                Robot::getMotor<motors::Conveyor>() = 0;
             }
             
             pros::delay(20);
@@ -197,29 +197,23 @@ namespace robotFuncs {
 
     void toggleFrontClamp() {
         frontClampState = 1 - frontClampState;
-        sRobot->getPiston("FrontClamp")->set_value(frontClampState);
+        Robot::getPiston<pistons::FrontClamp>().set_value(frontClampState);
 
     }
 
     void toggleBackClamp() {
         backClampState = 1 - backClampState;
-        sRobot->getPiston("BackClamp")->set_value(backClampState);
+        Robot::getPiston<pistons::BackClamp>().set_value(backClampState);
     }
 
     void toggleTilter() {
         tilterState = 1 - tilterState;
-        sRobot->getPiston("Tilter")->set_value(tilterState);
+        Robot::getPiston<pistons::Tilter>().set_value(tilterState);
 
     }
 
     void autonLift(liftStates setLiftState) {
         liftState = setLiftState;
-    }
-
-    void auton_conveyor(int time) {
-        *(sRobot->getMotor("Conveyor")) = 70;
-        pros::delay(time);
-        *(sRobot->getMotor("Conveyor")) = 0;
     }
 
     void distanceBack(double distance) {
@@ -238,11 +232,11 @@ namespace robotFuncs {
         double turnSpeed;
 
         Thread::pauseTask("move");
-        sRobot->arcade(-97, -30);
+        Robot::arcade(-97, -30);
         pros::delay(250);
-        while (sRobot->getInertial("Inertial")->get_roll() > 2.5) {
+        while (Robot::getSensor<sensors::Inertial>().get_roll() > 2.5) {
             moveSpeed = -127;
-            turnSpeed = -4.0 * (sRobot->getInertial("Inertial")->get_rotation());
+            turnSpeed = -4.0 * (Robot::getSensor<sensors::Inertial>().get_rotation());
 
             double speedSum = fabs(moveSpeed) + fabs(turnSpeed);
             double maxMoveSpeed = moveSpeed * (127 / speedSum);
@@ -254,19 +248,19 @@ namespace robotFuncs {
                 turnSpeed = maxTurnSpeed;
             }
 
-            sRobot->arcade(moveSpeed, turnSpeed);
-            printf("\nturn = %d", (int)sRobot->getInertial("Inertial")->get_rotation());
+            Robot::arcade(moveSpeed, turnSpeed);
+            printf("\nturn = %d", (int)Robot::getSensor<sensors::Inertial>().get_rotation());
             pros::delay(20);
         }
-        sRobot->stopDrive();
+        Robot::stopDrive();
         pros::delay(500);
-        dist = sRobot->getDistance("Back")->get() - distance;
+        dist = Robot::getSensor<sensors::BackDistance>().get() - distance;
         prevDist = dist;
-        turnErr = -1 * (sRobot->getInertial("Inertial")->get_rotation());
+        turnErr = -1 * (Robot::getSensor<sensors::Inertial>().get_rotation());
         prevTurnErr = turnErr;
         while (fabs(dist) > 15 || fabs(turnErr) > 2) {
-            dist = sRobot->getDistance("Back")->get() - distance;
-            turnErr = -1 * (sRobot->getInertial("Inertial")->get_rotation());
+            dist = Robot::getSensor<sensors::BackDistance>().get() - distance;
+            turnErr = -1 * (Robot::getSensor<sensors::Inertial>().get_rotation());
 
             mP = dist;
             mI += dist;
@@ -293,17 +287,17 @@ namespace robotFuncs {
             }
 
             if (dist < 0) {
-                sRobot->arcade(-70, turnSpeed);
+                Robot::arcade(-70, turnSpeed);
             }   
             else {
-                sRobot->arcade(-moveSpeed, turnSpeed);
+                Robot::arcade(-moveSpeed, turnSpeed);
             }
 
             printf("\ndist = %d, moveSpeed = %d, turnErr = %d, turnSpeed = %d", (int)dist, (int)moveSpeed, (int)turnErr, (int)turnSpeed);
             pros::delay(20);
         }
         printf("\nfinished");
-        sRobot->stopDrive();
+        Robot::stopDrive();
         pros::delay(500);
         Thread::notifyTask("fps");
         pros::delay(500);
@@ -323,5 +317,12 @@ namespace robotFuncs {
                 pros::delay(50);
             }
         }
+    }
+
+    void showPotentiometer() {
+        // printf("before %d", Robot::getSensor<sensors::LeftEncoder>().get_value());
+        pros::lcd::set_text(5, std::to_string(Robot::getSensor<sensors::LiftPotentiometer>().get_value()));
+        // pros::delay();
+        // printf("after %d", Robot::getSensor<sensors::LeftEncoder>().get_value());
     }
 }

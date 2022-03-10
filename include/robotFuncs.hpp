@@ -18,8 +18,8 @@ namespace robotFuncs {
     void toggleTilter();
 
     void autonLift(liftStates setLiftState);
-    void auton_conveyor(int time);
     void distanceBack(double distance);
 
     void controllerPrint(void* params);
+    void showPotentiometer();
 }
