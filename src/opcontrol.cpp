@@ -39,7 +39,6 @@ void opcontrol() {
 	// robotFuncs::toggleBackClamp();
 	// robotFuncs::toggleTilter();
 
-	// auto encoder = pros::c::adi_encoder_init(7, 8, false);
 	while (true) {
 		// pros::lcd::set_text(1, "X: " + std::to_string(sOdom->currentPos.x.load()));
 		// pros::lcd::set_text(2, "Y: " + std::to_string(sOdom->currentPos.y.load()));
